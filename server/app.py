@@ -5,7 +5,7 @@ load_dotenv()
 # Set up the app
 app = Flask(__name__, static_folder='../client/build/',    static_url_path='/')
 @app.route('/api/hello')
-def index():
+def hello():
     return "Hello World"
 # Set up the index route
 @app.route('/')
