@@ -2,5 +2,6 @@ Flask==2.1.1
 gunicorn==23.0.0
 python-dotenv
 Werkzeug==2.0.3
-torch
+torch==2.4.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+
 
