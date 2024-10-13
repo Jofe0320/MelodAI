@@ -1,0 +1,178 @@
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  line-height: 1.6;
+}
+
+.melodai-container {
+  min-height: 100vh;
+  background-color: white;
+}
+
+/* Header Styles */
+.melodai-header {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.melodai-logo {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+
+.melodai-nav-link {
+  margin-left: 1rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+  color: #333;
+}
+
+/* Main Content Styles */
+.melodai-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.melodai-section {
+  margin-bottom: 4rem;
+}
+
+/* Landing Page Section */
+.melodai-content {
+  display: grid;
+  gap: 2rem;
+}
+
+.melodai-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.melodai-description {
+  margin-bottom: 1.5rem;
+}
+
+.melodai-button {
+  background-color: #6200ee;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.melodai-button:hover {
+  background-color: #3700b3;
+}
+
+.melodai-images {
+  display: grid;
+  gap: 1rem;
+}
+
+.melodai-image-container {
+  aspect-ratio: 16 / 9;
+  background-color: #f0f0f0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.melodai-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* About Us Section */
+.melodai-about {
+  border-top: 1px solid #eaeaea;
+  padding-top: 4rem;
+}
+
+.melodai-about-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.melodai-about-content {
+  display: grid;
+  gap: 2rem;
+}
+
+.melodai-about-images {
+  position: relative;
+  height: 300px;
+}
+
+.melodai-about-image-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom right, #6200ee, #03dac6);
+  border-radius: 0.5rem;
+}
+
+.melodai-about-image-overlay {
+  position: absolute;
+  bottom: -20%;
+  right: -20%;
+  width: 80%;
+  height: 60%;
+  background-color: #f0f0f0;
+  border-radius: 0.5rem;
+}
+
+.melodai-about-subtitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.melodai-about-description {
+  margin-bottom: 1.5rem;
+}
+
+.melodai-about-button {
+  background-color: transparent;
+  color: #6200ee;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #6200ee;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.melodai-about-button:hover {
+  background-color: #6200ee;
+  color: white;
+}
+
+/* Responsive Styles */
+@media (min-width: 768px) {
+  .melodai-content,
+  .melodai-about-content {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+
+  .melodai-about-images {
+    height: 400px;
+  }
+}
