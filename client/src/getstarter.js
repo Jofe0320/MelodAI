@@ -1,10 +1,7 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import './Homepage.css'
+import React from "react";
+import "./getstarter.css"; // Import the CSS
 
-
-function Homepage() {
+export default function SampleMelodies() {
   const melodies = [
     { name: "Name A", user: "User A", audioSrc: "/audioA.mp3", duration: "01:04" },
     { name: "Name B", user: "User B", audioSrc: "/audioB.mp3", duration: "01:04" },
@@ -40,5 +37,3 @@ function Homepage() {
     </div>
   );
 }
-
-export default Homepage;

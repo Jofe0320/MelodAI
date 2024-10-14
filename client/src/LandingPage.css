@@ -70,11 +70,13 @@ body {
   border-radius: 0.25rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, padding 0.3s ease, border-radius 0.3s ease;
 }
 
 .melodai-button:hover {
   background-color: #3700b3;
+  padding: 0.85rem 1.65rem;
+  border-radius: 0.35rem;
 }
 
 .melodai-images {
@@ -93,6 +95,11 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.melodai-image:hover {
+  transform: scale(1.05);
 }
 
 /* About Us Section */
@@ -124,7 +131,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom right, #6200ee, #03dac6);
+  background: linear-gradient(to bottom right, #7b1fa2, #03a9f4);
   border-radius: 0.5rem;
 }
 
@@ -156,12 +163,14 @@ body {
   border-radius: 0.25rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, padding 0.3s ease, border-radius 0.3s ease;
 }
 
 .melodai-about-button:hover {
   background-color: #6200ee;
   color: white;
+  padding: 0.85rem 1.65rem;
+  border-radius: 0.35rem;
 }
 
 /* Responsive Styles */

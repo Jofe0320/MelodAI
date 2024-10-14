@@ -8,7 +8,7 @@ export default function LandingPage() {
       <header className="melodai-header p-4 flex justify-between items-center">
         <h1 className="melodai-logo text-xl font-bold">Melodai</h1>
         <nav>
-          <Link to="/explore" className="melodai-nav-link ml-4 text-sm"> {/* Use Link for navigation */}
+          <Link to="/explore" className="melodai-nav-link ml-4 text-sm">
             Explore Melodai
           </Link>
         </nav>
@@ -22,7 +22,9 @@ export default function LandingPage() {
               unique melodies by simply selecting your desired key, tempo, and genre. Listen to the magic unfold and save
               your creations with ease.
             </p>
-            <Link to="/app" className="melodai-button text-center block bg-blue-500 text-white py-2 px-4 rounded">Get Started</Link> {/* Change to Link */}
+            <Link to="/app" className="melodai-button text-center block bg-blue-500 text-white py-2 px-4 rounded" aria-label="Start using Melodai">
+              Get Started
+            </Link>
           </div>
           <div className="melodai-images grid gap-4">
             <div className="melodai-image-container aspect-video bg-gray-200 rounded-lg overflow-hidden">
@@ -30,6 +32,7 @@ export default function LandingPage() {
                 src="/placeholder.svg?height=200&width=300"
                 alt="Music production setup"
                 className="melodai-image w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
             <div className="melodai-image-container aspect-video bg-gray-200 rounded-lg overflow-hidden">
@@ -37,6 +40,7 @@ export default function LandingPage() {
                 src="/placeholder.svg?height=200&width=300"
                 alt="Mixing console"
                 className="melodai-image w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
           </div>
@@ -52,6 +56,7 @@ export default function LandingPage() {
                   src="/placeholder.svg?height=150&width=200"
                   alt="DJ equipment"
                   className="melodai-image w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
             </div>
@@ -60,7 +65,9 @@ export default function LandingPage() {
               <p className="mb-6">
                 Melodai is a groundbreaking online platform revolutionizing music creation. Our platform empowers users to effortlessly generate melodies tailored to their preferences, from classical to contemporary styles. We're democratizing music composition through innovative AI technology.
               </p>
-              <Link to="/about" className="melodai-button variant-outline">Learn More</Link> {/* Change to Link */}
+              <Link to="/about" className="melodai-button variant-outline" aria-label="Learn more about Melodai">
+                Learn More
+              </Link>
             </div>
           </div>
         </div>
