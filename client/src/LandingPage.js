@@ -46,11 +46,11 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div className="border-t pt-16">
-          <h2 className="text-3xl font-bold text-center mb-12">ABOUT US</h2>
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="relative">
-              <div className="aspect-square bg-gradient-to-br from-purple-600 via-red-500 to-yellow-500 rounded-lg overflow-hidden"></div>
+        <div className="melodai-about bg-gray-200 pt-16 pb-16">
+          <h2 className="melodai-about-title text-3xl font-bold text-center mb-12">ABOUT US</h2>
+          <div className="melodai-about-content grid md:grid-cols-2 gap-8">
+            <div className="relative melodai-about-images">
+              <div className="melodai-about-image-bg"></div>
               <div className="absolute bottom-0 right-0 w-2/3 aspect-video bg-gray-200 rounded-lg overflow-hidden transform translate-x-1/4 translate-y-1/4">
                 <img
                   src="/placeholder.svg?height=150&width=200"
@@ -61,11 +61,11 @@ export default function LandingPage() {
               </div>
             </div>
             <div>
-              <h3 className="text-2xl font-semibold mb-4">Our Mission</h3>
-              <p className="mb-6">
+              <h3 className="melodai-about-subtitle text-2xl font-semibold mb-4">Our Mission</h3>
+              <p className="melodai-about-description mb-6">
                 Melodai is a groundbreaking online platform revolutionizing music creation. Our platform empowers users to effortlessly generate melodies tailored to their preferences, from classical to contemporary styles. We're democratizing music composition through innovative AI technology.
               </p>
-              <Link to="/about" className="melodai-button variant-outline" aria-label="Learn more about Melodai">
+              <Link to="/about" className="melodai-about-button" aria-label="Learn more about Melodai">
                 Learn More
               </Link>
             </div>

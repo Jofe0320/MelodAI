@@ -1,7 +1,7 @@
 import React from "react";
 import logo from './logo.svg';
 import './App.css';
-import './getstarter.css'
+import './Explore.css'
 
 export default function ExplorePage() {
   const melodies = [

@@ -106,18 +106,35 @@ body {
 .melodai-about {
   border-top: 1px solid #eaeaea;
   padding-top: 4rem;
+  margin-top: 3rem; /* Adds space between this section and the content above */
+  background-color: #f0f0f0; /* Gray background */
+  padding-bottom: 4rem; /* Adds space at the bottom for better spacing */
+  width: 100%; /* Ensure it takes the full width */
+  position: relative; /* Allow absolute positioning for the title */
+  left: 0; /* Align to the left */
+  margin-left: 0; /* Remove left margin */
+  margin-right: 0; /* Remove right margin */
+  padding-left: 0; /* Remove left padding */
+  padding-right: 0; /* Remove right padding */
 }
+
 
 .melodai-about-title {
   font-size: 2rem;
   font-weight: bold;
-  text-align: center;
+  text-align: left; /* Align text to the left */
   margin-bottom: 3rem;
+  padding-left: 1rem; /* Add left padding for more space */
+  width: calc(100% - 2rem); /* Match the width of the colored box */
+  background-color: #0000; /* Same background color as .melodai-about */
+  padding: 1rem; /* Add some padding to the title */
+  border-radius: 0.5rem; /* Optional: add rounded corners */
 }
 
 .melodai-about-content {
   display: grid;
   gap: 2rem;
+  padding: 0 1rem; /* Padding on the sides for better spacing */
 }
 
 .melodai-about-images {
@@ -131,8 +148,9 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom right, #7b1fa2, #03a9f4);
+  background: linear-gradient(to bottom right, #7b1fa2, #03a9f4); /* Gradient background */
   border-radius: 0.5rem;
+  z-index: 1; /* Keep this behind the overlay */
 }
 
 .melodai-about-image-overlay {
@@ -141,25 +159,30 @@ body {
   right: -20%;
   width: 80%;
   height: 60%;
-  background-color: #f0f0f0;
+  background-color: #f0f0f0; /* Overlay color */
   border-radius: 0.5rem;
+  z-index: 2; /* Ensure the overlay is on top */
 }
-
 .melodai-about-subtitle {
-  font-size: 1.5rem;
+  font-size: 1.75rem; /* Larger font for subtitle */
   font-weight: bold;
   margin-bottom: 1rem;
+  text-align: center; /* Centered for uniformity */
 }
 
 .melodai-about-description {
   margin-bottom: 1.5rem;
+  text-align: Left; /* Center text for better presentation */
+  max-width: 800px; /* Limiting width for readability */
+  margin-left: auto; /* Center align block */
+  margin-right: auto; /* Center align block */
 }
 
 .melodai-about-button {
-  background-color: transparent;
-  color: #6200ee;
+  background-color: black;
+  color: white;
   padding: 0.75rem 1.5rem;
-  border: 1px solid #6200ee;
+  border: 1px solid #333;
   border-radius: 0.25rem;
   font-size: 1rem;
   cursor: pointer;
@@ -167,7 +190,7 @@ body {
 }
 
 .melodai-about-button:hover {
-  background-color: #6200ee;
+  background-color: #3700b3;
   color: white;
   padding: 0.85rem 1.65rem;
   border-radius: 0.35rem;

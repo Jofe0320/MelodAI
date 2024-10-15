@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './LandingPage';  // Your landing page component
 import Homepage from './Homepage';  // The original page
-import ExplorePage from "./getstarter";  // New Explore page
+import ExplorePage from "./Explore";  // New Explore page
 
 function App() {
   return (
