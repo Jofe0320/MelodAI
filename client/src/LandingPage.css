@@ -102,20 +102,21 @@ body {
   transform: scale(1.05);
 }
 
-/* About Us Section */
+
+
 .melodai-about {
   border-top: 1px solid #eaeaea;
   padding-top: 4rem;
-  margin-top: 3rem; /* Adds space between this section and the content above */
+  margin-top: 3rem; /* Space between this section and the content above */
   background-color: #f0f0f0; /* Gray background */
   padding-bottom: 4rem; /* Adds space at the bottom for better spacing */
-  width: 100%; /* Ensure it takes the full width */
-  position: relative; /* Allow absolute positioning for the title */
+  width: 100vw; /* Set width to 100% of the viewport width */
+  position: relative; /* Allow positioning */
   left: 0; /* Align to the left */
-  margin-left: 0; /* Remove left margin */
-  margin-right: 0; /* Remove right margin */
-  padding-left: 0; /* Remove left padding */
-  padding-right: 0; /* Remove right padding */
+  right: 0; /* Align to the right */
+  margin-left: calc(50% - 50vw); /* Center alignment */
+  margin-right: calc(50% - 50vw); /* Center alignment */
+  z-index: 1; /* Ensure it's above other elements if needed */
 }
 
 
