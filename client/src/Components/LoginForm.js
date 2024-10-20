@@ -9,7 +9,7 @@ const Login = () => {
     e.preventDefault();
   
     try {
-      const response = await fetch('http://127.0.0.1:8000/auth/login', {
+      const response = await fetch('/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const Login = () => {
       console.error('Error during login:', error);
       alert('An error occurred during login.');
     }
-  };
+  };  
 
   return (
     <Grid container style={{ height: '100vh' }}>

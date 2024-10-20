@@ -1,16 +1,40 @@
 import React, { useState } from 'react';
 import { Grid, TextField, Button, Typography, Box } from '@mui/material';
+import axios from 'axios';
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    try {
+      // Make POST request to Flask backend for signup
+      const response = await axios.post('/auth/signup', {
+        username,
+        email,
+        password,
+      });
 
-    // Handle the sign-up logic here, including making a request to your Flask backend
-    console.log('SignUp:', { username, email, password });
+      // On success, clear the form and display success message
+      setUsername('');
+      setEmail('');
+      setPassword('');
+      setSuccessMessage('Account created successfully!');
+      setErrorMessage(''); // Clear any previous error message
+    } catch (error) {
+      // Handle errors (e.g., user already exists)
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.message || 'An error occurred during sign up.');
+      } else {
+        setErrorMessage('An error occurred. Please try again.');
+      }
+      setSuccessMessage(''); // Clear success message on error
+    }
   };
 
   return (
@@ -30,8 +54,22 @@ const SignupForm = () => {
             Create Account
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
-            By creating an account you can save any generated melodies.
+            By creating an account, you can save any generated melodies.
           </Typography>
+
+          {/* Show success message */}
+          {successMessage && (
+            <Typography color="primary" variant="subtitle2">
+              {successMessage}
+            </Typography>
+          )}
+
+          {/* Show error message */}
+          {errorMessage && (
+            <Typography color="error" variant="subtitle2">
+              {errorMessage}
+            </Typography>
+          )}
 
           <form onSubmit={handleSubmit}>
             <TextField
@@ -44,7 +82,7 @@ const SignupForm = () => {
               required
             />
             <TextField
-              label="Enter email"
+              label="Enter Email"
               variant="outlined"
               fullWidth
               margin="normal"
