@@ -13,5 +13,5 @@ python-dotenv==1.0.1
 requests==2.32.3
 requests-file==2.1.0
 setuptools==75.2.0
-SQLAlchemy==2.0.36
+SQLAlchemy==1.4.45
 
