@@ -1,6 +1,6 @@
 from flask import Flask 
 from dotenv import load_dotenv
-from models import db
+from .models import db
 from routes.auth import auth_bp  # Importing your authentication routes
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
