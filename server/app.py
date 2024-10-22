@@ -18,13 +18,14 @@ CORS(app)
 def hello():
     return "Hola"
 
-# Serve React frontend for all non-API routes
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react(path):
-    if path and os.path.exists(os.path.join(app.static_folder, path)):
+    # Serve static files if they exist
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:
+        # Serve index.html for client-side routing to work
         return send_from_directory(app.static_folder, 'index.html')
 
 # Database configuration
