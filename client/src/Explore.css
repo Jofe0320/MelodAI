@@ -1,0 +1,60 @@
+/* Sample Melodies Container */
+.sample-melodies-container {
+  text-align: Left;
+  background-color: #f9f9f9;
+  padding: 20px 200px;
+   min-height: 100vh;
+}
+
+.sample-melodies-title {
+  font-size: 6rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+/* Icons Grid */
+.melodies-grid {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 40px;
+}
+
+.icon-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.melody-icon {
+  width: 100px;
+  height: 100px;
+}
+
+/* Audio Players Grid */
+.melodies-players-grid {
+  display: flex;
+  justify-content: space-around;
+}
+
+.audio-player {
+  width: 200px;
+  text-align: center;
+}
+
+.melody-info {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.audio-duration {
+  margin-top: 5px;
+  font-size: 0.875rem;
+  color: #999;
+}
+
+audio {
+  width: 100%;
+  margin-top: 10px;
+}
