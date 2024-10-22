@@ -1,7 +1,6 @@
 import React from "react";
-import logo from './logo.svg';
 import './App.css';
-import './Explore.css'
+import './Explore.css';
 
 export default function ExplorePage() {
   const melodies = [
@@ -15,13 +14,16 @@ export default function ExplorePage() {
       <h2 className="sample-melodies-title">Sample Melodies</h2>
       <div className="melodies-grid">
         <div className="icon-container">
-          <img src="/icons/piano-icon.svg" alt="Piano" className="melody-icon" />
+
+          <img src="/Pianopng.webp" alt="Piano" className="melody-icon" />
         </div>
         <div className="icon-container">
-          <img src="/icons/saxophone-icon.svg" alt="Saxophone" className="melody-icon" />
+          {/* Use a WebP image for saxophone */}
+          <img src="/Saxofon.webp" alt="Saxophone" className="melody-icon" />
         </div>
         <div className="icon-container">
-          <img src="/icons/guitar-icon.svg" alt="Guitar" className="melody-icon" />
+          {/* Use a WebP image for guitar */}
+          <img src="/Guitarra.webp" alt="Guitar" className="melody-icon" />
         </div>
       </div>
       <div className="melodies-players-grid">

@@ -22,14 +22,14 @@ export default function LandingPage() {
               unique melodies by simply selecting your desired key, tempo, and genre. Listen to the magic unfold and save
               your creations with ease.
             </p>
-            <Link to="/app" className="melodai-button text-center block bg-blue-500 text-white py-2 px-4 rounded" aria-label="Start using Melodai">
+            <Link to="/landing-form" className="melodai-button text-center block bg-blue-500 text-white py-2 px-4 rounded" aria-label="Start using Melodai">
               Get Started
             </Link>
           </div>
           <div className="melodai-images grid gap-4">
             <div className="melodai-image-container aspect-video bg-gray-200 rounded-lg overflow-hidden">
               <img
-                src="/placeholder.svg?height=200&width=300"
+                src="/musicproduction.webp?height=200&width=300"
                 alt="Music production setup"
                 className="melodai-image w-full h-full object-cover"
                 loading="lazy"
@@ -37,7 +37,7 @@ export default function LandingPage() {
             </div>
             <div className="melodai-image-container aspect-video bg-gray-200 rounded-lg overflow-hidden">
               <img
-                src="/placeholder.svg?height=200&width=300"
+                src="/Consola.webp?height=200&width=300"
                 alt="Mixing console"
                 className="melodai-image w-full h-full object-cover"
                 loading="lazy"
