@@ -118,7 +118,7 @@ const SignupForm = () => {
         <Box
           style={{
             height: '100%',
-            backgroundImage: 'url(/RockerImg.png)',
+            backgroundImage: 'url(/RockerImg.webp)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
