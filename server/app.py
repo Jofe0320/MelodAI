@@ -1,4 +1,4 @@
-from flask import Flask 
+from flask import Flask, send_from_directory
 from dotenv import load_dotenv
 from .models import db
 from .routes.auth import auth_bp  # Importing your authentication routes
@@ -6,7 +6,9 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import os
-from flask import Flask, send_from_directory
+import boto3
+# Import and register blueprints (routes)
+from .routes.upload import upload_bp
 
 load_dotenv()
 
@@ -42,6 +44,16 @@ app.register_blueprint(auth_bp, url_prefix='/auth')
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'  # Replace with a strong secret key
 
 jwt = JWTManager(app)
+
+# Initialize S3
+s3 = boto3.client(
+    's3',
+    aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+    region_name=os.environ.get('AWS_REGION')
+)
+
+app.register_blueprint(upload_bp)
 
 if __name__ == '__main__':
     app.run(port=(os.getenv('PORT') if os.getenv('PORT') else 8000), debug=False)
