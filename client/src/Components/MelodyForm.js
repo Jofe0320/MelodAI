@@ -23,12 +23,12 @@ function MelodyForm() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh',  // Full viewport height for vertical centering
-        backgroundColor: '#f4f4f4', // Light background for better contrast
-        backgroundImage: 'url(/musicstudio.webp)',  // Set your image path
-        backgroundSize: 'cover', // Cover the full area
-        backgroundPosition: 'center', // Center the image
-        backgroundRepeat: 'no-repeat', // Prevent repeating
+        minHeight: '100vh',
+        backgroundColor: '#f4f4f4',
+        backgroundImage: 'url(/musicstudio.webp)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
       }}
     >
       <Box
@@ -39,8 +39,8 @@ function MelodyForm() {
           alignItems: 'center',
           justifyContent: 'center',
           width: '100%',
-          maxWidth: 700,  // Increased the maxWidth to make the form wider
-          padding: 3,  // Increased padding for better spacing
+          maxWidth: 700,
+          padding: 3,
           backgroundColor: '#fff',
           borderRadius: 2,
           boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
@@ -83,7 +83,7 @@ function MelodyForm() {
           </Select>
         </FormControl>
 
-        {/* Generate Button */}
+        {/* Generate / Re-generate Button */}
         <Button
           variant="contained"
           color="primary"
@@ -91,7 +91,7 @@ function MelodyForm() {
           fullWidth
           sx={{ marginBottom: 2 }}
         >
-          Generate
+          {generated ? 'Re-generate' : 'Generate'}
         </Button>
 
         {/* Audio Player with Built-in Controls */}
