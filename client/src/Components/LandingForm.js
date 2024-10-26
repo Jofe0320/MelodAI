@@ -4,15 +4,16 @@ import './LandingForm.css'; // Import CSS
 
 const LandingPage = () => {
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1>Welcome to Melodai</h1>
-            {/* Use React Router's Link to navigate to login and signup */}
-            <Link to="/login">
-                <button>Login</button>
-            </Link>
-            <Link to="/signup">
-                <button>Sign Up</button>
-            </Link>
+        <div className="landing-container">
+            <h1 className="landing-title">Welcome to Melodai</h1>
+            <div className="landing-buttons">
+                <Link to="/login">
+                    <button className="landing-button">Login</button>
+                </Link>
+                <Link to="/signup">
+                    <button className="landing-button">Sign Up</button>
+                </Link>
+            </div>
         </div>
     );
 };
