@@ -30,6 +30,12 @@ def serve_react(path):
         # Serve index.html for client-side routing to work
         return send_from_directory(app.static_folder, 'index.html')
 
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
+
+
+
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://u7v38u17rga1ak:pbf8019097e745f1c0201c31eb27589031deb2bf23263f5aa11a87a876f4ef414@caij57unh724n3.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/dap0rjnlna6o30'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
