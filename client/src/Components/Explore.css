@@ -10,7 +10,7 @@
   font-size: 6rem;
   font-weight: bold;
   margin-bottom: 40px;
-  color: #333;
+  color: white;
 }
 
 /* Icons Grid */
@@ -45,7 +45,7 @@
 .melody-info {
   font-size: 1rem;
   margin-bottom: 5px;
-  color: #555;
+  color: white;
 }
 
 .audio-duration {

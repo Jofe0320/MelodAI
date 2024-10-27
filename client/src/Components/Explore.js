@@ -10,31 +10,41 @@ export default function ExplorePage() {
   ];
 
   return (
-    <div className="sample-melodies-container">
-      <h2 className="sample-melodies-title">Sample Melodies</h2>
+    <div className="sample-melodies-container" style={{
+        backgroundImage: "url('/wood.webp')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        color: 'white', // Change text color to white
+      }}>
+      <h2 className="sample-melodies-title" style={{ textShadow: "1px 1px 3px rgba(0, 0, 0, 0.8)" }}>
+        Sample Melodies
+      </h2>
       <div className="melodies-grid">
         <div className="icon-container">
-
           <img src="/Pianopng.webp" alt="Piano" className="melody-icon" />
         </div>
         <div className="icon-container">
-          {/* Use a WebP image for saxophone */}
           <img src="/Saxofon.webp" alt="Saxophone" className="melody-icon" />
         </div>
         <div className="icon-container">
-          {/* Use a WebP image for guitar */}
           <img src="/Guitarra.webp" alt="Guitar" className="melody-icon" />
         </div>
       </div>
       <div className="melodies-players-grid">
         {melodies.map((melody, index) => (
-          <div key={index} className="audio-player">
-            <p className="melody-info">{melody.name} - {melody.user}</p>
+          <div key={index} className="audio-player" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", padding: "10px", borderRadius: "5px", margin: "10px 0" }}>
+            <p className="melody-info" style={{ textShadow: "1px 1px 3px rgba(0, 0, 0, 0.8)" }}>
+              {melody.name} - {melody.user}
+            </p>
             <audio controls>
               <source src={melody.audioSrc} type="audio/mp3" />
               Your browser does not support the audio element.
             </audio>
-            <p className="audio-duration">{melody.duration}</p>
+            <p className="audio-duration" style={{ textShadow: "1px 1px 3px rgba(0, 0, 0, 0.8)" }}>
+              {melody.duration}
+            </p>
           </div>
         ))}
       </div>

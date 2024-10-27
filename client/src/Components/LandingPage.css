@@ -9,7 +9,7 @@ body {
 
 .melodai-container {
   min-height: 100vh;
-  background-color: white;
+  background-color: black;
 }
 
 /* Header Styles */
@@ -19,6 +19,7 @@ body {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eaeaea;
+  background-color: rgba(255, 255, 255, 0.8); /* Adjust the last value (0.8) for transparency */
 }
 
 .melodai-logo {
@@ -107,8 +108,7 @@ body {
 .melodai-about {
   border-top: 1px solid #eaeaea;
   padding-top: 4rem;
-  margin-top: 3rem; /* Space between this section and the content above */
-  background-color: #f0f0f0; /* Gray background */
+  margin-top: 3rem; /* Space between this section and the content above */ /* Gray background */
   padding-bottom: 4rem; /* Adds space at the bottom for better spacing */
   width: 100vw; /* Set width to 100% of the viewport width */
   position: relative; /* Allow positioning */
@@ -173,6 +173,7 @@ body {
 
 .melodai-about-description {
   margin-bottom: 1.5rem;
+  font-size: 2rem;
   text-align: Left; /* Center text for better presentation */
   max-width: 800px; /* Limiting width for readability */
   margin-left: auto; /* Center align block */
@@ -186,6 +187,7 @@ body {
   border: 1px solid #333;
   border-radius: 0.25rem;
   font-size: 1rem;
+  font-weight: bold; /* Added bold font weight */
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease, padding 0.3s ease, border-radius 0.3s ease;
 }
