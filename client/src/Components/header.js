@@ -1,5 +1,4 @@
-// header.js
-import React, { useState } from 'react';
+import cReact, { useState } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Drawer, List, ListItem, ListItemText, Box } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -9,6 +8,7 @@ function Header({ user }) { // Accept user prop for displaying the logged-in use
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const open = Boolean(anchorEl);
+
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
