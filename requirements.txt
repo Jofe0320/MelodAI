@@ -35,4 +35,4 @@ urllib3==2.2.3
 Werkzeug==3.0.4
 zope.event==5.0
 zope.interface==7.1.0
-tensorflow-cpu==2.16.1
+boto3
