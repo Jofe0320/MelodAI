@@ -10,14 +10,7 @@ export default function ExplorePage() {
   ];
 
   return (
-    <div className="sample-melodies-container" style={{
-        backgroundImage: "url('/wood.webp')",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        minHeight: "100vh",
-        color: 'white', // Change text color to white
-      }}>
+    <div className="sample-melodies-container">
       <h2 className="sample-melodies-title" style={{ textShadow: "1px 1px 3px rgba(0, 0, 0, 0.8)" }}>
         Sample Melodies
       </h2>

@@ -5,15 +5,7 @@ import "./LandingPage.css";
 export default function LandingPage() {
   return (
     <div
-      className="melodai-container min-h-screen"
-      style={{
-        backgroundImage: "url('/wod.webp')",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        minHeight: "100vh",
-      }}
-    >
+      className="melodai-container min-h-screen">
       <header className="melodai-header p-4 flex justify-between items-center">
         <h1 className="melodai-logo text-xl font-bold" style={{ color: 'black' }}>Melodai</h1>
         <nav>
