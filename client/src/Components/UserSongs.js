@@ -1,90 +1,128 @@
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Music, Trash2, Plus } from 'lucide-react'
+// src/Components/UserSongs.js
+import React from "react";
+import { FaTrashAlt, FaMusic } from "react-icons/fa";
 
-// come from an API or database
-const mockSongs = [
-  { id: 1, title: 'My First Song', duration: '3:45', createdAt: '2023-05-15' },
-  { id: 2, title: 'Summer Vibes', duration: '4:20', createdAt: '2023-06-01' },
-  { id: 3, title: 'Rainy Day Blues', duration: '5:10', createdAt: '2023-06-15' },
-  { id: 4, title: 'Midnight Melody', duration: '3:30', createdAt: '2023-07-01' },
-  { id: 5, title: 'Acoustic Dreams', duration: '2:55', createdAt: '2023-07-05' },
-  { id: 6, title: 'Electric Sunset', duration: '4:10', createdAt: '2023-07-10' },
-  { id: 7, title: 'Jazz Fusion', duration: '6:20', createdAt: '2023-07-15' },
-  { id: 8, title: 'Rock Anthem', duration: '3:50', createdAt: '2023-07-20' },
-]
+// Song data
+const songs = [
+  { title: "My First Song", duration: "3:45", created: "2023-05-15" },
+  { title: "Summer Vibes", duration: "4:20", created: "2023-06-01" },
+  { title: "Rainy Day Blues", duration: "5:10", created: "2023-06-15" },
+  { title: "Midnight Melody", duration: "3:30", created: "2023-07-01" },
+  { title: "Acoustic Dreams", duration: "2:55", created: "2023-07-05" },
+  { title: "Electric Sunset", duration: "4:10", created: "2023-07-10" },
+  { title: "Jazz Fusion", duration: "6:20", created: "2023-07-15" },
+  { title: "Rock Anthem", duration: "3:50", created: "2023-07-20" },
+];
 
-export default function Component() {
-  const [songs, setSongs] = useState(mockSongs)
-  const [songToDelete, setSongToDelete] = useState(null)
+const UserSongs = () => {
+  const handleDelete = (title) => {
+    alert(`Deleted ${title}`);
+  };
 
-  const deleteSong = (id) => {
-    setSongs(songs.filter(song => song.id !== id))
-    setSongToDelete(null)
-  }
+  // Apply black background to the body when the component mounts
+  React.useEffect(() => {
+    document.body.style.backgroundColor = "black";
+    document.body.style.margin = "0"; // Remove body margin to cover the whole screen
+  }, []);
+
+  // Inline styles
+  const containerStyle = {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    padding: "20px",
+    color: "white", // White text for readability
+  };
+
+  const gridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+    gap: "20px",
+  };
+
+  const cardStyle = {
+    backgroundColor: "#333", // Dark gray background for the cards
+    border: "1px solid #444",
+    borderRadius: "8px",
+    padding: "20px",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  };
+
+  const songInfoStyle = {
+    marginBottom: "10px",
+  };
+
+  const deleteButtonStyle = {
+    backgroundColor: "#ff4d4d",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    padding: "10px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "5px",
+  };
+
+  const deleteButtonHoverStyle = {
+    backgroundColor: "#e60000",
+  };
+
+  const footerStyle = {
+    textAlign: "center",
+    marginTop: "20px",
+  };
+
+  const addButtonStyle = {
+    margin: "20px auto",
+    display: "block",
+    padding: "10px 20px",
+    backgroundColor: "white",
+    color: "black",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+  };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      <header className="flex justify-between items-center p-4 border-b">
-        <h1 className="text-2xl font-bold">Your Songs</h1>
-        <Button size="sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Add New Song
-        </Button>
-      </header>
-      <main className="flex-grow overflow-hidden">
-        <ScrollArea className="h-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
-            {songs.length === 0 ? (
-              <p className="text-center text-muted-foreground col-span-full">You haven't created any songs yet.</p>
-            ) : (
-              songs.map((song) => (
-                <Card key={song.id} className="flex flex-col">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium truncate">{song.title}</CardTitle>
-                    <Music className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <div className="text-xs text-muted-foreground">Duration: {song.duration}</div>
-                    <div className="text-xs text-muted-foreground">Created: {song.createdAt}</div>
-                  </CardContent>
-                  <CardFooter className="pt-2">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => setSongToDelete(song)}
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))
-            )}
+    <div style={containerStyle}>
+      <h1>Your Songs</h1>
+      <div style={gridStyle}>
+        {songs.map((song, index) => (
+          <div key={index} style={cardStyle}>
+            <div style={songInfoStyle}>
+              <h3>
+                {song.title} <FaMusic />
+              </h3>
+              <p>Duration: {song.duration}</p>
+              <p>Created: {song.created}</p>
+            </div>
+            <button
+              style={deleteButtonStyle}
+              onClick={() => handleDelete(song.title)}
+              onMouseOver={(e) =>
+                (e.target.style.backgroundColor =
+                  deleteButtonHoverStyle.backgroundColor)
+              }
+              onMouseOut={(e) =>
+                (e.target.style.backgroundColor =
+                  deleteButtonStyle.backgroundColor)
+              }
+            >
+              <FaTrashAlt /> Delete
+            </button>
           </div>
-        </ScrollArea>
-      </main>
-      <footer className="p-4 border-t">
-        <p className="text-sm text-muted-foreground text-center">Total songs: {songs.length}</p>
-      </footer>
-      <Dialog open={songToDelete !== null} onOpenChange={() => setSongToDelete(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Song</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete "{songToDelete?.title}"? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="secondary" onClick={() => setSongToDelete(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={() => deleteSong(songToDelete?.id)}>Delete</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        ))}
+      </div>
+      <div style={footerStyle}>
+        <p>Total songs: {songs.length}</p>
+      </div>
+      <button style={addButtonStyle}>+ Add New Song</button>
     </div>
-  )
-}
+  );
+};
+
+export default UserSongs;

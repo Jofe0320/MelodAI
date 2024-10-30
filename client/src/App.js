@@ -7,6 +7,7 @@ import LandingForm from './Components/LandingForm';  // Landing form from second
 import LoginForm from './Components/LoginForm';  // Login form from second code
 import SignupForm from './Components/SignupForm';  // Signup form from second code
 import MelodyForm from'./Components/MelodyForm';
+import UserSongs from "./Components/UserSongs";
 
 function App() {
   return (
@@ -16,8 +17,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />       {/* Main Landing Page */}
         <Route path="/app" element={<Homepage />} />       {/* Homepage */}
         <Route path="/explore" element={<ExplorePage />} />{/* Explore Page */}
-
-        {/* Routes from the second code snippet */}
+        <Route path="/usersongs" element={<UserSongs />}/> {/* Routes from the second code snippet */}
         <Route path="/landing-form" element={<LandingForm />} /> {/* Landing form */}
         <Route path="/login" element={<LoginForm />} />          {/* Login Form */}
         <Route path="/signup" element={<SignupForm />} />        {/* Signup Form */}
