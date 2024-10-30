@@ -1,11 +1,7 @@
 build:
-  web:
-    docker:
-      web: ./server/Dockerfile
-    build:
-      context: .
-  tensorflow:
-    docker:
-      web: ./MLmodel/Dockerfile
-    build:
-      context: ./MLmodel
+  docker:
+    web: server/Dockerfile
+    tensorflow: MLmodel/Dockerfile
+run:
+  web: python server/app.py  # Ensure this runs your Flask app
+  tensorflow: /usr/bin/tensorflow_model_server --model_base_path=/models/model_name --rest_api_port=850
