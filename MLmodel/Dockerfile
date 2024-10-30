@@ -12,4 +12,3 @@ EXPOSE 8500 8501
 
 # Command to start TensorFlow Serving, listening on port 8501
 CMD ["tensorflow_model_server", "--port=8500", "--rest_api_port=8501", "--model_name=model_name", "--model_base_path=/models/model_name"]
-

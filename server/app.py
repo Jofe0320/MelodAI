@@ -1,19 +1,19 @@
 from flask import Flask, send_from_directory
 from dotenv import load_dotenv
-from .models import db
-from .routes.auth import auth_bp  # Importing your authentication routes
+from models import db
+from routes.auth import auth_bp  # Importing your authentication routes
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import os
 import boto3
 # Import and register blueprints (routes)
-from .routes.upload import upload_bp
+from routes.upload import upload_bp
 
 load_dotenv()
 
 # Set up the app
-app = Flask(__name__, static_folder='../client/build/',    static_url_path='/')
+app = Flask(__name__, static_folder='client/build/',    static_url_path='/')
 CORS(app)
 
 @app.route('/api/hello')
@@ -62,4 +62,6 @@ s3 = boto3.client(
 app.register_blueprint(upload_bp)
 
 if __name__ == '__main__':
-    app.run(port=(os.getenv('PORT') if os.getenv('PORT') else 8000), debug=False)
+    # port = int(os.getenv('PORT') or 8000)  # Defaults to 8000 if PORT is not set
+    app.run(host='0.0.0.0', port=8000, debug=False)
+
