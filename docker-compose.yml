@@ -1,21 +1,20 @@
 services:
-  db:
-    image: postgres:14
-    container_name: my_postgres_db
-    environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: newpassword
-      POSTGRES_DB: mydatabase
-    volumes:
-      - db_data:/var/lib/postgresql/data
-      - ./init:/docker-entrypoint-initdb.d
+  web:
+    build:
+      context: .  # Root context for multi-stage Dockerfile
+      dockerfile: Dockerfile.web  # Path to web Dockerfile in the root
     ports:
-      - "5432:5432"
-    networks:
-      - db_network
+      - "8000:8000"
+    environment:
+      MODEL_SERVER: "http://tensorflow:8501"
+      PYTHONPATH: "/app"
+      PORT: "8000"
+    depends_on:
+      - tensorflow
 
-volumes:
-  db_data:
-
-networks:
-  db_network:
+  tensorflow:
+    build:
+      context: .  # Root context for the TensorFlow Dockerfile
+      dockerfile: Dockerfile.tensorflow  # Path to TensorFlow Dockerfile in the root
+    ports:
+      - "8501:8501"

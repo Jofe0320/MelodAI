@@ -1,8 +1,10 @@
+# Dockerfile.tensorflow
+
 # Use TensorFlow Serving as the base image
 FROM tensorflow/serving
 
 # Copy the SavedModel to the correct location inside the Docker image
-COPY LstmModel /models/model_name/1
+COPY MLmodel/LstmModel /models/model_name/1
 
 # Set environment variable for the model name
 ENV MODEL_NAME=model_name
