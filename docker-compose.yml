@@ -1,8 +1,8 @@
 services:
   web:
     build:
-      context: .          # Use the root context for multi-stage Dockerfile
-      dockerfile: server/Dockerfile   # Path to the new Dockerfile
+      context: .  # Root context for multi-stage Dockerfile
+      dockerfile: Dockerfile.web  # Path to web Dockerfile in the root
     ports:
       - "8000:8000"
     environment:
@@ -14,7 +14,7 @@ services:
 
   tensorflow:
     build:
-      context: ./MLmodel
-      dockerfile: Dockerfile
+      context: .  # Root context for the TensorFlow Dockerfile
+      dockerfile: Dockerfile.tensorflow  # Path to TensorFlow Dockerfile in the root
     ports:
       - "8501:8501"
