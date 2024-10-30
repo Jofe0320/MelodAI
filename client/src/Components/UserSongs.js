@@ -12,6 +12,7 @@ const songs = [
   { title: "Electric Sunset", duration: "4:10", created: "2023-07-10" },
   { title: "Jazz Fusion", duration: "6:20", created: "2023-07-15" },
   { title: "Rock Anthem", duration: "3:50", created: "2023-07-20" },
+  { title: "Rock Anthem", duration: "3:50", created: "2023-07-20" }
 ];
 
 const UserSongs = () => {
