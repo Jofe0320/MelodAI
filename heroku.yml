@@ -1,7 +1,5 @@
 build:
   docker:
     web: Dockerfile.web
-    tensorflow: Dockerfile.tensorflow
 run:
   web: gunicorn app:app --bind 0.0.0.0:$PORT
-  tensorflow: /usr/bin/tensorflow_model_server --model_base_path=/models/model_name --rest_api_port=8501
