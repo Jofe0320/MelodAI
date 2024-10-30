@@ -1,7 +1,7 @@
 build:
   docker:
-    web: server/Dockerfile
-    tensorflow: MLmodel/Dockerfile
+    web: Dockerfile.web
+    tensorflow: Dockerfile.tensorflow
 run:
-  web: python server/app.py  # Ensure this runs your Flask app
-  tensorflow: /usr/bin/tensorflow_model_server --model_base_path=/models/model_name --rest_api_port=850
+  web: sh -c "gunicorn --bind 0.0.0.0:${PORT:-8000} app:app"
+  tensorflow: /usr/bin/tensorflow_model_server --model_base_path=/models/model_name --rest_api_port=8501
