@@ -1,0 +1,11 @@
+build:
+  web:
+    docker:
+      web: ./server/Dockerfile
+    build:
+      context: .
+  tensorflow:
+    docker:
+      web: ./MLmodel/Dockerfile
+    build:
+      context: ./MLmodel
