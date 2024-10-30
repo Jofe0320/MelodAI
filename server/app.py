@@ -1,5 +1,9 @@
-from flask import Flask, send_from_directory
+import io
+import queue
+import random
+from flask import Flask, send_file, send_from_directory,request
 from dotenv import load_dotenv
+import numpy as np
 from models import db
 from routes.auth import auth_bp  # Importing your authentication routes
 from flask_migrate import Migrate
@@ -7,6 +11,8 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import os
 import boto3
+import mido
+import requests
 # Import and register blueprints (routes)
 from routes.upload import upload_bp
 
@@ -34,6 +40,94 @@ def serve_react(path):
 def not_found(e):
     return app.send_static_file('index.html')
 
+MODEL_SERVER_URL = os.getenv("MODEL_SERVER_URL", "http://tensorflow:8501/v1/models/model_name:predict")
+
+# Function to make predictions by sending data to the REST API
+def make_prediction(input_data):
+    data = {"instances": [input_data]}
+    response = requests.post(MODEL_SERVER_URL, json=data)
+    response_json = response.json()
+    return response_json.get('predictions', None)
+
+# Melody generation API endpoint
+@app.route('/generate_melody', methods=['GET'])
+def generate_melody():
+    # Get query parameters, with random defaults for `mode` and `octave`
+    tonic = int(request.args.get('tonic', 0))  # Default to 0 if not provided
+    mode = int(request.args.get('mode', random.randint(0, 1)))
+    octave = int(request.args.get('octave', int(np.random.normal(6, 1, 1))))
+    length = 55
+
+    dictarray = []
+    for i in range(length - 5):
+        notesfordict = random.randint(0, 11)
+        octavefordict = octave + random.randint(-1, 1)
+        dictarray.append([notesfordict, octavefordict, tonic, mode])
+
+    temperature = 0.5
+
+    # Generate predictions
+    for i in range(30):
+        input_data = dictarray[-(length - 5):]
+        predictions = make_prediction(input_data)[0]
+
+        if predictions:
+            for j in range(5):
+                pred_note = np.array(predictions[f"output_{j+1}"]) / temperature
+                pred_note = np.exp(pred_note) / np.sum(np.exp(pred_note))
+                predicted_note = np.argmax(pred_note, axis=0)
+
+                pred_octave = np.array(predictions[f"output_{j+6}"]) / temperature
+                pred_octave = np.exp(pred_octave) / np.sum(np.exp(pred_octave))
+                predicted_octave = np.argmax(pred_octave, axis=0)
+
+                new_sequence = np.stack([[predicted_note], [predicted_octave], [tonic], [mode]], axis=-1)
+                dictarray.append(new_sequence.flatten().tolist())
+
+    # Convert predictions to MIDI
+    notes = np.array(dictarray)[:, 0:2]
+    note_queue = queue.Queue()
+    for note, octave in notes:
+        note_queue.put(note + octave * 12)
+
+    midi_file = mido.MidiFile()
+    track = mido.MidiTrack()
+    midi_file.tracks.append(track)
+
+    velocity = 100
+    tick_range = (200, 600)
+
+    while not note_queue.empty():
+        if random.random() < 0.7:
+            duration = random.randint(*tick_range)
+            added_note = note_queue.get()
+            track.append(mido.Message('note_on', note=added_note, velocity=velocity, time=0))
+            track.append(mido.Message('note_off', note=added_note, velocity=velocity, time=duration))
+        else:
+            chords = []
+            if note_queue.qsize() <= 2:
+                break
+            for _ in range(random.randint(2, min(4, note_queue.qsize()))):
+                chords.append(note_queue.get())
+
+            for chord_note in chords:
+                track.append(mido.Message('note_on', note=chord_note, velocity=velocity, time=random.randint(10, 20)))
+            for chord_note in chords:
+                duration = random.randint(200, 400)
+                track.append(mido.Message('note_off', note=chord_note, velocity=velocity, time=duration))
+
+    # Save MIDI to an in-memory file
+    midi_io = io.BytesIO()
+    midi_file.save(file=midi_io)
+    midi_io.seek(0)
+
+    # Return MIDI file as response without saving to disk
+    return send_file(
+        midi_io,
+        as_attachment=True,
+        download_name="generated_melody.mid",
+        mimetype="audio/midi"
+    )
 
 
 # Database configuration
