@@ -40,7 +40,7 @@ def serve_react(path):
 def not_found(e):
     return app.send_static_file('index.html')
 
-MODEL_SERVER_URL = os.getenv("MODEL_SERVER_URL", "http://tensorflow:8501/v1/models/model_name:predict")
+MODEL_SERVER_URL = os.getenv("MODEL_SERVER_URL", "http://localhost:8501/v1/models/model_name:predict")
 
 # Function to make predictions by sending data to the REST API
 def make_prediction(input_data):
