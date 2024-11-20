@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
-from ..models import Song  # Assuming Song is in the models file
+from models import Song  # Assuming Song is in the models file
 
 BUCKET_NAME = "melodai-generated-songs"  # Replace with your actual S3 bucket name
 

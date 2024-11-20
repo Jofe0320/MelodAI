@@ -6,7 +6,7 @@ import mido
 import queue
 
 # REST API endpoint for TensorFlow Serving
-MODEL_SERVER_URL = "http://localhost:8510/v1/models/model_name:predict"
+MODEL_SERVER_URL = "http://localhost:8501/v1/models/model_name:predict"
 
 # Initialize start array with tonic, mode, and octave
 length = 55  # Set based on your model’s needs
