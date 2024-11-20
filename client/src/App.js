@@ -8,6 +8,7 @@ import LoginForm from './Components/LoginForm';  // Login form from second code
 import SignupForm from './Components/SignupForm';  // Signup form from second code
 import MelodyForm from'./Components/MelodyForm';
 import UserSongs from "./Components/UserSongs";
+import EditProfilePage from "./Components/Editprofile";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/signup" element={<SignupForm />} />        {/* Signup Form */}
         {/* Melody Form Route */}
         <Route path="/create-melody" element={<MelodyForm />} /> {/* Create Melody Form */}
+        <Route path="/edit-profile" element={<EditProfilePage />} />
       </Routes>
     </Router>
   );
