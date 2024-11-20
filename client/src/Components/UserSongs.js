@@ -1,6 +1,4 @@
-// src/Components/UserSongs.js
 import React from "react";
-import { FaTrashAlt, FaMusic } from "react-icons/fa";
 
 // Song data
 const songs = [
@@ -12,7 +10,7 @@ const songs = [
   { title: "Electric Sunset", duration: "4:10", created: "2023-07-10" },
   { title: "Jazz Fusion", duration: "6:20", created: "2023-07-15" },
   { title: "Rock Anthem", duration: "3:50", created: "2023-07-20" },
-  { title: "Rock Anthem", duration: "3:50", created: "2023-07-20" }
+  { title: "Rock Anthem", duration: "3:50", created: "2023-07-20" },
 ];
 
 const UserSongs = () => {
@@ -20,18 +18,16 @@ const UserSongs = () => {
     alert(`Deleted ${title}`);
   };
 
-  // Apply black background to the body when the component mounts
   React.useEffect(() => {
     document.body.style.backgroundColor = "black";
-    document.body.style.margin = "0"; // Remove body margin to cover the whole screen
+    document.body.style.margin = "0";
   }, []);
 
-  // Inline styles
   const containerStyle = {
     maxWidth: "1200px",
     margin: "0 auto",
     padding: "20px",
-    color: "white", // White text for readability
+    color: "white",
   };
 
   const gridStyle = {
@@ -41,7 +37,7 @@ const UserSongs = () => {
   };
 
   const cardStyle = {
-    backgroundColor: "#333", // Dark gray background for the cards
+    backgroundColor: "#333",
     border: "1px solid #444",
     borderRadius: "8px",
     padding: "20px",
@@ -88,6 +84,20 @@ const UserSongs = () => {
     cursor: "pointer",
   };
 
+  const musicIcon = "🎵"; // Unicode music note
+  const trashIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="16"
+      viewBox="0 0 24 24"
+      width="16"
+      fill="white"
+    >
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+    </svg>
+  );
+
   return (
     <div style={containerStyle}>
       <h1>Your Songs</h1>
@@ -96,7 +106,7 @@ const UserSongs = () => {
           <div key={index} style={cardStyle}>
             <div style={songInfoStyle}>
               <h3>
-                {song.title} <FaMusic />
+                {song.title} {musicIcon}
               </h3>
               <p>Duration: {song.duration}</p>
               <p>Created: {song.created}</p>
@@ -113,7 +123,7 @@ const UserSongs = () => {
                   deleteButtonStyle.backgroundColor)
               }
             >
-              <FaTrashAlt /> Delete
+              {trashIcon} Delete
             </button>
           </div>
         ))}
