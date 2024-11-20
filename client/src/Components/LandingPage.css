@@ -1,4 +1,47 @@
 /* Global Styles */
+/* Bubble Button Styles */
+/* Bubble Button Styles */
+.melodai-bubble-button {
+  font-size: 0.875rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333; /* Text color */
+  background-color: #f0f0f0; /* Light background for the bubble */
+  padding: 0.5rem 1rem; /* Padding for the bubble effect */
+  border-radius: 1.5rem; /* Fully rounded corners for a bubble effect */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for a raised effect */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-block; /* Ensures proper spacing and layout */
+  margin-right: 0; /* Remove unintended margins */
+}
+
+.melodai-bubble-button:hover {
+  background-color: #d0d0d0; /* Darker background on hover */
+  transform: scale(1.05); /* Slight scale effect on hover */
+}
+
+/* Adjust spacing between buttons */
+.melodai-header .space-x-6 > *:not(:last-child) {
+  margin-right: 1.5rem; /* Increased spacing between items */
+}
+
+
+/* Navigation Links */
+.melodai-nav-link {
+  font-size: 0.875rem;
+  text-decoration: none;
+  color: #333; /* Match the font color */
+  font-weight: bold; /* Match Explore Melodai */
+  padding: 0.25rem 0.5rem; /* Small padding for spacing */
+  border-radius: 0.25rem; /* Rounded edges */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.melodai-nav-link:hover {
+  background-color: #eaeaea; /* Subtle hover effect */
+  color: #000;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
