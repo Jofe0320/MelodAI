@@ -15,7 +15,7 @@ export default function LandingPage() {
             Explore Melodai
           </Link>
           <Link
-            to="/profile"
+            to="/login"
             className="melodai-bubble-button text-sm"
           >
             Profile
