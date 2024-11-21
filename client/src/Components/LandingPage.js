@@ -7,12 +7,18 @@ export default function LandingPage() {
     <div className="melodai-container min-h-screen">
       <header className="melodai-header p-4 flex justify-between items-center">
         <h1 className="melodai-logo text-xl font-bold" style={{ color: "black" }}>Melodai</h1>
-        <nav className="flex items-center space-x-6"> {/* Increased spacing */}
+        <nav className="flex items-center space-x-6"> {/* Updated with spacing */}
           <Link
             to="/explore"
             className="melodai-bubble-button text-sm"
           >
             Explore Melodai
+          </Link>
+          <Link
+            to="/profile"
+            className="melodai-bubble-button text-sm"
+          >
+            Profile
           </Link>
           <Link
             to="/edit-profile"

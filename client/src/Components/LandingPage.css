@@ -1,6 +1,5 @@
 /* Global Styles */
 /* Bubble Button Styles */
-/* Bubble Button Styles */
 .melodai-bubble-button {
   font-size: 0.875rem;
   font-weight: bold;
@@ -13,6 +12,7 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
   display: inline-block; /* Ensures proper spacing and layout */
   margin-right: 0; /* Remove unintended margins */
+  margin: 0 1rem; /* Adds horizontal spacing between buttons */
 }
 
 .melodai-bubble-button:hover {
@@ -21,10 +21,14 @@
 }
 
 /* Adjust spacing between buttons */
-.melodai-header .space-x-6 > *:not(:last-child) {
-  margin-right: 1.5rem; /* Increased spacing between items */
+.melodai-header .space-x-6 > * {
+  margin-left: 0; /* Reset left margin for individual buttons */
 }
 
+.melodai-header nav {
+  display: flex;
+  justify-content: space-between; /* Ensures even spacing */
+}
 
 /* Navigation Links */
 .melodai-nav-link {
@@ -106,7 +110,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-
 .melodai-button {
   background-color: #333;
   color: white;
@@ -146,12 +149,12 @@ body {
   transform: scale(1.05);
 }
 
-
-
+/* About Section */
 .melodai-about {
   border-top: 1px solid #eaeaea;
   padding-top: 4rem;
-  margin-top: 3rem; /* Space between this section and the content above */ /* Gray background */
+  margin-top: 3rem; /* Space between this section and the content above */
+  background-color: #000;
   padding-bottom: 4rem; /* Adds space at the bottom for better spacing */
   width: 100vw; /* Set width to 100% of the viewport width */
   position: relative; /* Allow positioning */
@@ -162,11 +165,10 @@ body {
   z-index: 1; /* Ensure it's above other elements if needed */
 }
 
-
 .melodai-about-title {
   font-size: 2rem;
   font-weight: bold;
-  text-align: left; /* Align text to the left *c/
+  text-align: left; /* Align text to the left */
   margin-bottom: 3rem;
   padding-left: 1rem; /* Add left padding for more space */
   width: calc(100% - 2rem); /* Match the width of the colored box */
@@ -207,6 +209,7 @@ body {
   border-radius: 0.5rem;
   z-index: 2; /* Ensure the overlay is on top */
 }
+
 .melodai-about-subtitle {
   font-size: 1.75rem; /* Larger font for subtitle */
   font-weight: bold;
@@ -217,7 +220,7 @@ body {
 .melodai-about-description {
   margin-bottom: 1.5rem;
   font-size: 2rem;
-  text-align: Left; /* Center text for better presentation */
+  text-align: left; /* Align text to the left */
   max-width: 800px; /* Limiting width for readability */
   margin-left: auto; /* Center align block */
   margin-right: auto; /* Center align block */
@@ -230,7 +233,7 @@ body {
   border: 1px solid #333;
   border-radius: 0.25rem;
   font-size: 1rem;
-  font-weight: bold; /* Added bold font weight */
+  font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease, padding 0.3s ease, border-radius 0.3s ease;
 }
