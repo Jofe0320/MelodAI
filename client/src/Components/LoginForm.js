@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import { Grid, TextField, Button, Typography, Box } from '@mui/material';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch('/auth/login', {
         method: 'POST',
@@ -16,14 +18,16 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         // If login is successful, store the token in localStorage
         localStorage.setItem('token', data.token);
         console.log('Login successful:', data);
-        // Optionally, redirect the user to a different page after login
+
+        // Redirect to the /edit-profile page
+        navigate('/create-melody');
       } else {
         console.error('Login failed:', data.message);
         alert('Login failed: ' + data.message);
@@ -32,20 +36,23 @@ const Login = () => {
       console.error('Error during login:', error);
       alert('An error occurred during login.');
     }
-  };  
+  };
 
   return (
     <Grid container style={{ height: '100vh' }}>
       {/* Left column with image */}
-      <Grid item xs={12} md={6}   style={{
-    backgroundImage: 'url(/GuitarImageLogIn.webp)', 
-    backgroundSize: 'cover',  // Ensures the image covers the entire area
-    backgroundPosition: 'center',  // Centers the image
-    height: '100%',  // Makes sure the height fills the entire view
-    backgroundRepeat: 'no-repeat',  // Prevents any repeat of the image
-  }}>
-        {/* You can replace the image URL above with your guitar image */}
-      </Grid>
+      <Grid
+        item
+        xs={12}
+        md={6}
+        style={{
+          backgroundImage: 'url(/GuitarImageLogIn.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          height: '100%',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
 
       {/* Right column with login form */}
       <Grid
@@ -90,7 +97,7 @@ const Login = () => {
               fullWidth
               variant="contained"
               color="primary"
-              style={{ marginTop: '1rem', backgroundColor: '#000' }}  // To match your black button style
+              style={{ marginTop: '1rem', backgroundColor: '#000' }}
             >
               Login
             </Button>

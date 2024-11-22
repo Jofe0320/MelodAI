@@ -1,27 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-// Song data
-const songs = [
-  { title: "My First Song", duration: "3:45", created: "2023-05-15" },
-  { title: "Summer Vibes", duration: "4:20", created: "2023-06-01" },
-  { title: "Rainy Day Blues", duration: "5:10", created: "2023-06-15" },
-  { title: "Midnight Melody", duration: "3:30", created: "2023-07-01" },
-  { title: "Acoustic Dreams", duration: "2:55", created: "2023-07-05" },
-  { title: "Electric Sunset", duration: "4:10", created: "2023-07-10" },
-  { title: "Jazz Fusion", duration: "6:20", created: "2023-07-15" },
-  { title: "Rock Anthem", duration: "3:50", created: "2023-07-20" },
-  { title: "Rock Anthem", duration: "3:50", created: "2023-07-20" },
-];
+// Music note icon
+const musicIcon = "🎵";
 
 const UserSongs = () => {
-  const handleDelete = (title) => {
-    alert(`Deleted ${title}`);
-  };
+  const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // Set background color for the body
     document.body.style.backgroundColor = "black";
     document.body.style.margin = "0";
+
+    // Fetch songs from the backend
+    const fetchSongs = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Get token for authentication
+        const response = await fetch("/api/songs", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include token in Authorization header
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setSongs(data);
+        } else {
+          console.error("Failed to fetch songs");
+          alert("Could not load songs. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error fetching songs:", error);
+        alert("An error occurred while loading songs.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSongs();
   }, []);
+
+  const handleDelete = async (title) => {
+    alert(`Deleted ${title}`);
+    // Optional: Implement DELETE request to remove the song from the database
+  };
+
+  if (loading) {
+    return <h2 style={{ color: "white", textAlign: "center" }}>Loading songs...</h2>;
+  }
 
   const containerStyle = {
     maxWidth: "1200px",
@@ -73,65 +99,43 @@ const UserSongs = () => {
     marginTop: "20px",
   };
 
-  const addButtonStyle = {
-    margin: "20px auto",
-    display: "block",
-    padding: "10px 20px",
-    backgroundColor: "white",
-    color: "black",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  };
-
-  const musicIcon = "🎵"; // Unicode music note
-  const trashIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="16"
-      viewBox="0 0 24 24"
-      width="16"
-      fill="white"
-    >
-      <path d="M0 0h24v24H0V0z" fill="none" />
-      <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
-    </svg>
-  );
-
   return (
     <div style={containerStyle}>
       <h1>Your Songs</h1>
-      <div style={gridStyle}>
-        {songs.map((song, index) => (
-          <div key={index} style={cardStyle}>
-            <div style={songInfoStyle}>
-              <h3>
-                {song.title} {musicIcon}
-              </h3>
-              <p>Duration: {song.duration}</p>
-              <p>Created: {song.created}</p>
+      {songs.length === 0 ? (
+        <p style={{ textAlign: "center" }}>No songs found.</p>
+      ) : (
+        <div style={gridStyle}>
+          {songs.map((song, index) => (
+            <div key={index} style={cardStyle}>
+              <div style={songInfoStyle}>
+                <h3>
+                  {song.title} {musicIcon}
+                </h3>
+                <p>Duration: {song.duration}</p>
+                <p>Created: {song.created}</p>
+              </div>
+              <button
+                style={deleteButtonStyle}
+                onClick={() => handleDelete(song.title)}
+                onMouseOver={(e) =>
+                  (e.target.style.backgroundColor =
+                    deleteButtonHoverStyle.backgroundColor)
+                }
+                onMouseOut={(e) =>
+                  (e.target.style.backgroundColor =
+                    deleteButtonStyle.backgroundColor)
+                }
+              >
+                Delete
+              </button>
             </div>
-            <button
-              style={deleteButtonStyle}
-              onClick={() => handleDelete(song.title)}
-              onMouseOver={(e) =>
-                (e.target.style.backgroundColor =
-                  deleteButtonHoverStyle.backgroundColor)
-              }
-              onMouseOut={(e) =>
-                (e.target.style.backgroundColor =
-                  deleteButtonStyle.backgroundColor)
-              }
-            >
-              {trashIcon} Delete
-            </button>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       <div style={footerStyle}>
         <p>Total songs: {songs.length}</p>
       </div>
-      <button style={addButtonStyle}>+ Add New Song</button>
     </div>
   );
 };

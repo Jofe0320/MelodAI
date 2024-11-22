@@ -89,16 +89,6 @@ export default function LandingPage() {
                 effortlessly generate melodies tailored to their preferences, from classical to contemporary styles. We're
                 democratizing music composition through innovative AI technology.
               </p>
-              <div className="flex justify-end">
-                <Link
-                  to="/about"
-                  className="melodai-about-button"
-                  aria-label="Learn more about Melodai"
-                  style={{ color: "white" }}
-                >
-                  Learn More
-                </Link>
-              </div>
             </div>
           </div>
         </div>
