@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { Grid, TextField, Button, Typography, Box, Tab, Tabs, Alert } from "@mui/material";
+import axios from "axios";
 
 export default function EditProfilePage() {
   const [userInfo, setUserInfo] = useState({
-    username: "musiclover123",
-    email: "musiclover@example.com",
+    currentUsername: "",
+    currentPassword: "",
+    newUsername: "",
+    email: "",
+    newPassword: "",
   });
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
@@ -19,8 +23,14 @@ export default function EditProfilePage() {
 
   const validateForm = (field) => {
     const newErrors = {};
-    if (field === "username" && !userInfo.username.trim()) {
-      newErrors.username = "Username is required.";
+    if (!userInfo.currentUsername.trim()) {
+      newErrors.currentUsername = "Current username is required.";
+    }
+    if (!userInfo.currentPassword.trim()) {
+      newErrors.currentPassword = "Current password is required.";
+    }
+    if (field === "username" && !userInfo.newUsername.trim()) {
+      newErrors.newUsername = "New username is required.";
     }
     if (field === "email") {
       if (!userInfo.email.trim()) {
@@ -28,6 +38,9 @@ export default function EditProfilePage() {
       } else if (!/\S+@\S+\.\S+/.test(userInfo.email)) {
         newErrors.email = "Email is invalid.";
       }
+    }
+    if (field === "password" && !userInfo.newPassword.trim()) {
+      newErrors.newPassword = "New password is required.";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -38,13 +51,28 @@ export default function EditProfilePage() {
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setSuccessMessage(`${field === "username" ? "Username" : "Email"} updated successfully!`);
+      const payload = {
+        currentUsername: userInfo.currentUsername,
+        currentPassword: userInfo.currentPassword,
+      };
+
+      if (field === "username") {
+        payload.newUsername = userInfo.newUsername;
+        await axios.put("http://localhost:5000/auth/update-username", payload);
+        setSuccessMessage("Username updated successfully!");
+      } else if (field === "email") {
+        payload.email = userInfo.email;
+        await axios.put("http://localhost:5000/auth/update-email", payload);
+        setSuccessMessage("Email updated successfully!");
+      } else if (field === "password") {
+        payload.newPassword = userInfo.newPassword;
+        await axios.put("http://localhost:5000/auth/update-password", payload);
+        setSuccessMessage("Password updated successfully!");
+      }
+
       setErrors({});
     } catch (error) {
-      setSuccessMessage("");
-      setErrors({ form: "An error occurred. Please try again." });
+      setErrors({ form: "Failed to update. Please try again." });
     } finally {
       setIsLoading(false);
     }
@@ -52,38 +80,55 @@ export default function EditProfilePage() {
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
-    setSuccessMessage(""); // Clear messages on tab change
+    setSuccessMessage("");
   };
 
   return (
-    <Grid container justifyContent="center" alignItems="center" style={{ height: "100vh", padding: "1rem" }}>
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      style={{
+        height: "100vh",
+        padding: "1rem",
+        backgroundColor: "black", // Set the background color to black
+      }}
+    >
       <Box
         style={{
           maxWidth: "500px",
           width: "100%",
-          backgroundColor: "#fff",
+          backgroundColor: "#fff", // Keep the form white for contrast
           padding: "2rem",
           borderRadius: "8px",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom style={{ color: "black" }}>
           Edit Profile
         </Typography>
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="subtitle1" gutterBottom style={{ color: "black" }}>
           Update your profile information.
         </Typography>
 
-        {/* Success Message */}
         {successMessage && <Alert severity="success">{successMessage}</Alert>}
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onChange={handleTabChange} style={{ marginBottom: "1rem" }} centered>
-          <Tab label="Username" />
-          <Tab label="Email" />
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          style={{ marginBottom: "1rem" }}
+          centered
+          TabIndicatorProps={{
+            style: {
+              backgroundColor: "Black", // Highlight tabs with white
+            },
+          }}
+        >
+          <Tab label="Username" style={{ color: "Black" }} />
+          <Tab label="Email" style={{ color: "Black" }} />
+          <Tab label="Password" style={{ color: "Black" }} />
         </Tabs>
 
-        {/* Tab Content */}
         {activeTab === 0 && (
           <form
             onSubmit={(e) => {
@@ -92,15 +137,38 @@ export default function EditProfilePage() {
             }}
           >
             <TextField
-              label="Username"
+              label="Current Username"
               variant="outlined"
               fullWidth
               margin="normal"
-              name="username"
-              value={userInfo.username}
+              name="currentUsername"
+              value={userInfo.currentUsername}
               onChange={handleInputChange}
-              error={!!errors.username}
-              helperText={errors.username}
+              error={!!errors.currentUsername}
+              helperText={errors.currentUsername}
+            />
+            <TextField
+              label="Current Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              name="currentPassword"
+              value={userInfo.currentPassword}
+              onChange={handleInputChange}
+              error={!!errors.currentPassword}
+              helperText={errors.currentPassword}
+            />
+            <TextField
+              label="New Username"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              name="newUsername"
+              value={userInfo.newUsername}
+              onChange={handleInputChange}
+              error={!!errors.newUsername}
+              helperText={errors.newUsername}
             />
             <Button
               type="submit"
@@ -123,12 +191,34 @@ export default function EditProfilePage() {
             }}
           >
             <TextField
-              label="Email"
+              label="Current Username"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              name="currentUsername"
+              value={userInfo.currentUsername}
+              onChange={handleInputChange}
+              error={!!errors.currentUsername}
+              helperText={errors.currentUsername}
+            />
+            <TextField
+              label="Current Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              name="currentPassword"
+              value={userInfo.currentPassword}
+              onChange={handleInputChange}
+              error={!!errors.currentPassword}
+              helperText={errors.currentPassword}
+            />
+            <TextField
+              label="New Email"
               variant="outlined"
               fullWidth
               margin="normal"
               name="email"
-              type="email"
               value={userInfo.email}
               onChange={handleInputChange}
               error={!!errors.email}
@@ -143,6 +233,61 @@ export default function EditProfilePage() {
               style={{ marginTop: "1rem" }}
             >
               {isLoading ? "Updating..." : "Update Email"}
+            </Button>
+          </form>
+        )}
+
+        {activeTab === 2 && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit("password");
+            }}
+          >
+            <TextField
+              label="Current Username"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              name="currentUsername"
+              value={userInfo.currentUsername}
+              onChange={handleInputChange}
+              error={!!errors.currentUsername}
+              helperText={errors.currentUsername}
+            />
+            <TextField
+              label="Current Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              name="currentPassword"
+              value={userInfo.currentPassword}
+              onChange={handleInputChange}
+              error={!!errors.currentPassword}
+              helperText={errors.currentPassword}
+            />
+            <TextField
+              label="New Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              name="newPassword"
+              value={userInfo.newPassword}
+              onChange={handleInputChange}
+              error={!!errors.newPassword}
+              helperText={errors.newPassword}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              disabled={isLoading}
+              style={{ marginTop: "1rem" }}
+            >
+              {isLoading ? "Updating..." : "Update Password"}
             </Button>
           </form>
         )}
