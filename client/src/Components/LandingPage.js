@@ -7,7 +7,7 @@ export default function LandingPage() {
     <div className="melodai-container min-h-screen">
       <header className="melodai-header p-4 flex justify-between items-center">
         <h1 className="melodai-logo text-xl font-bold" style={{ color: "black" }}>Melodai</h1>
-        <nav className="flex items-center space-x-6"> {/* Updated with spacing */}
+        <nav className="flex ml-auto space-x-6"> {/* Added ml-auto to align right */}
           <Link
             to="/explore"
             className="melodai-bubble-button text-sm"
@@ -19,12 +19,6 @@ export default function LandingPage() {
             className="melodai-bubble-button text-sm"
           >
             Profile
-          </Link>
-          <Link
-            to="/edit-profile"
-            className="melodai-bubble-button text-sm"
-          >
-            Edit Profile
           </Link>
         </nav>
       </header>
