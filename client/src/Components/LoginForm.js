@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Grid, TextField, Button, Typography, Box } from '@mui/material';
+import { useAuth } from '../AuthProvider';
 
 const Login = () => {
+  const { login } = useAuth(); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the intended route from state or set a default route
+  const from = location.state?.from?.pathname || '/create-melody';
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,12 +28,10 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // If login is successful, store the token in localStorage
-        localStorage.setItem('token', data.token);
         console.log('Login successful:', data);
-
-        // Redirect to the /edit-profile page
-        navigate('/create-melody');
+        login(data)
+        // Redirect to the intended route
+        navigate(from, { replace: true });
       } else {
         console.error('Login failed:', data.message);
         alert('Login failed: ' + data.message);
@@ -40,7 +44,6 @@ const Login = () => {
 
   return (
     <Grid container style={{ height: '100vh' }}>
-      {/* Left column with image */}
       <Grid
         item
         xs={12}
@@ -53,8 +56,6 @@ const Login = () => {
           backgroundRepeat: 'no-repeat',
         }}
       />
-
-      {/* Right column with login form */}
       <Grid
         item
         xs={12}
