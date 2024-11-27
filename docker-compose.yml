@@ -6,15 +6,5 @@ services:
     ports:
       - "8000:8000"
     environment:
-      MODEL_SERVER: "http://tensorflow:8501"
       PYTHONPATH: "/app"
       PORT: "8000"
-    depends_on:
-      - tensorflow
-
-  tensorflow:
-    build:
-      context: .  # Root context for the TensorFlow Dockerfile
-      dockerfile: Dockerfile.tensorflow  # Path to TensorFlow Dockerfile in the root
-    ports:
-      - "8501:8501"

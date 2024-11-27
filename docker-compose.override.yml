@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "8000:8000"  # Expose Flask app
+    environment:
+      FLASK_ENV: development  # Enable hot reloading for Flask
+    volumes:
+      - ./server:/app  # Mount Flask backend
+      - ./client/build:/app/client/build  # Mount React build directory
+    command: flask run --host=0.0.0.0 --port=8000
