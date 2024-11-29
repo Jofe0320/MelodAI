@@ -29,3 +29,34 @@ def upload_file():
     db.session.commit()
 
     return jsonify({"message": "Files uploaded and saved successfully!"})
+
+@upload_bp.route('/songs', methods=['GET'])
+def get_user_songs():
+    """
+    Fetch and present songs uploaded by a specific user.
+    """
+    user_id = request.args.get('user_id')  # Get the user ID from the query parameter
+
+    # Validate that the user_id was provided
+    if not user_id:
+        return jsonify({"message": "User ID is required"}), 400
+
+    # Fetch songs belonging to the user from the database
+    songs = Song.query.filter_by(user_id=user_id).all()
+
+    # Check if the user has uploaded any songs
+    if not songs:
+        return jsonify({"message": "No songs found for this user"}), 404
+
+    # Serialize the song data into JSON format
+    songs_data = [
+        {
+            "id": song.id,
+            "midi_link": song.midi_link,
+            "sheet_music_link": song.sheet_music_link,
+            "created_at": song.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Optional: formatted timestamp
+        }
+        for song in songs
+    ]
+
+    return jsonify({"songs": songs_data}), 200
