@@ -96,7 +96,7 @@ const UserSongs = () => {
 
   const footerStyle = {
     textAlign: "center",
-    marginTop: "21px",
+    marginTop: "20px",
   };
 
   return (
