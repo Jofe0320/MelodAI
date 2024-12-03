@@ -17,18 +17,25 @@ const UserSongs = () => {
       try {
         const token = localStorage.getItem("token"); // Get token for authentication
         const userId = localStorage.getItem("user_id"); // Get user_id (ensure this is stored or fetched)
-        const response = await fetch(`/api/songs?user_id=${userId}`, {
+        if (!userId || !token) {
+          alert("User ID or token is missing. Please log in again.");
+          return;
+        }
+
+        const response = await fetch(`/songs?user_id=${userId}`, {
           headers: {
-            'Authorization': `Bearer ${token}`, // Include token in Authorization header
-          },
+          'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Include token for authentication
+        },
         });
 
         if (response.ok) {
           const data = await response.json();
           setSongs(data.songs); // Update to match the backend response structure
         } else {
-          console.error("Failed to fetch songs");
-          alert("Could not load songs. Please try again.");
+          const errorData = await response.json();
+          console.error("Failed to fetch songs:", errorData.message);
+          alert(errorData.message || "Could not load songs. Please try again.");
         }
       } catch (error) {
         console.error("Error fetching songs:", error);
@@ -42,8 +49,27 @@ const UserSongs = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    alert(`Deleted song with ID ${id}`);
-    // Optional: Implement DELETE request to remove the song from the database
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/songs/${id}`, {
+        method: "DELETE",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        alert("Song deleted successfully.");
+        setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || "Failed to delete the song.");
+      }
+    } catch (error) {
+      console.error("Error deleting song:", error);
+      alert("An error occurred while deleting the song.");
+    }
   };
 
   if (loading) {
@@ -101,9 +127,7 @@ const UserSongs = () => {
   };
 
   return (
-    <div style={
-    containerStyle
-    }>
+    <div style={containerStyle}>
       <h1>Your Songs</h1>
       {songs.length === 0 ? (
         <p style={{ textAlign: "center" }}>No songs found.</p>
