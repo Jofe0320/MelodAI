@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const musicIcon = "🎵";
 
@@ -7,55 +8,50 @@ const UserSongs = () => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useAuth(); // Use global user state from AuthProvider
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Ensure the user is logged in
     if (!user) {
-      setError("User is not logged in. Please log in again.");
-      setLoading(false);
+      setError("User is not logged in. Redirecting...");
+      setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
       return;
     }
 
     const fetchSongs = async () => {
       try {
-        const token = localStorage.getItem("token"); // Retrieve token from localStorage
-        if (!token) {
-          setError("Authentication token is missing. Please log in again.");
-          return;
-        }
-
         const response = await fetch(`/songs?user_id=${user.id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Attach token in Authorization header
           },
+          credentials: "include", // Include HttpOnly token cookie
         });
 
         if (!response.ok) {
           if (response.status === 401) {
-            // Token is invalid or expired
-            setError("Your session has expired. Please log in again.");
+            setError("Your session has expired. Redirecting to login...");
+            setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
             return;
           }
           const errorData = await response.json();
-          setError(errorData.message || "Could not load songs. Please try again.");
+          setError(errorData.message || "Failed to fetch songs.");
           return;
         }
 
         const data = await response.json();
-        setSongs(data.songs); // Update with backend response
-      } catch (err) {
-        setError("An error occurred while loading songs. Please try again later.");
-        console.error("Error fetching songs:", err);
+        setSongs(data.songs);
+      } catch (error) {
+        setError("An error occurred while fetching songs.");
+        console.error("Error fetching songs:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchSongs();
-  }, [user]); // Re-run if the user context changes
+  }, [user, navigate]);
 
   if (loading) {
     return <h2 style={{ color: "white", textAlign: "center" }}>Loading songs...</h2>;
