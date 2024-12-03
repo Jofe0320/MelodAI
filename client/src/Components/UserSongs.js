@@ -24,9 +24,9 @@ const UserSongs = () => {
 
         const response = await fetch(`/songs?user_id=${userId}`, {
           headers: {
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`, // Include token for authentication
-        },
+          },
         });
 
         if (response.ok) {
@@ -47,30 +47,6 @@ const UserSongs = () => {
 
     fetchSongs();
   }, []);
-
-  const handleDelete = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/songs/${id}`, {
-        method: "DELETE",
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        alert("Song deleted successfully.");
-        setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message || "Failed to delete the song.");
-      }
-    } catch (error) {
-      console.error("Error deleting song:", error);
-      alert("An error occurred while deleting the song.");
-    }
-  };
 
   if (loading) {
     return <h2 style={{ color: "white", textAlign: "center" }}>Loading songs...</h2>;
@@ -102,23 +78,6 @@ const UserSongs = () => {
 
   const songInfoStyle = {
     marginBottom: "10px",
-  };
-
-  const deleteButtonStyle = {
-    backgroundColor: "#ff4d4d",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    padding: "10px",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "5px",
-  };
-
-  const deleteButtonHoverStyle = {
-    backgroundColor: "#e60000",
   };
 
   const footerStyle = {
@@ -178,22 +137,6 @@ const UserSongs = () => {
                 {/* Song Creation Date */}
                 <p>Created At: {song.created_at}</p>
               </div>
-
-              {/* Delete Button */}
-              <button
-                style={deleteButtonStyle}
-                onClick={() => handleDelete(song.id)}
-                onMouseOver={(e) =>
-                  (e.target.style.backgroundColor =
-                    deleteButtonHoverStyle.backgroundColor)
-                }
-                onMouseOut={(e) =>
-                  (e.target.style.backgroundColor =
-                    deleteButtonStyle.backgroundColor)
-                }
-              >
-                Delete
-              </button>
             </div>
           ))}
         </div>
