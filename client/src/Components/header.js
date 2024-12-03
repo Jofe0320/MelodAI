@@ -4,6 +4,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import { useAuth } from '../AuthProvider';
+import PropTypes from 'prop-types'
 
 function Header({ user }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -115,5 +116,13 @@ function Header({ user }) {
     </AppBar>
   );
 }
+
+Header.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.number,
+    email: PropTypes.string,
+    username: PropTypes.string,
+  }), // Allow user to be null or undefined
+};
 
 export default Header;
