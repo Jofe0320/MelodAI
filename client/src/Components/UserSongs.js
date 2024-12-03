@@ -16,7 +16,8 @@ const UserSongs = () => {
     const fetchSongs = async () => {
       try {
         const token = localStorage.getItem("token"); // Get token for authentication
-        const response = await fetch("/api/songs", {
+        const userId = localStorage.getItem("user_id"); // Get user_id (ensure this is stored or fetched)
+        const response = await fetch(`/api/songs?user_id=${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`, // Include token in Authorization header
           },
@@ -24,7 +25,7 @@ const UserSongs = () => {
 
         if (response.ok) {
           const data = await response.json();
-          setSongs(data);
+          setSongs(data.songs); // Update to match the backend response structure
         } else {
           console.error("Failed to fetch songs");
           alert("Could not load songs. Please try again.");
@@ -40,8 +41,8 @@ const UserSongs = () => {
     fetchSongs();
   }, []);
 
-  const handleDelete = async (title) => {
-    alert(`Deleted ${title}`);
+  const handleDelete = async (id) => {
+    alert(`Deleted song with ID ${id}`);
     // Optional: Implement DELETE request to remove the song from the database
   };
 
@@ -106,18 +107,30 @@ const UserSongs = () => {
         <p style={{ textAlign: "center" }}>No songs found.</p>
       ) : (
         <div style={gridStyle}>
-          {songs.map((song, index) => (
-            <div key={index} style={cardStyle}>
+          {songs.map((song) => (
+            <div key={song.id} style={cardStyle}>
               <div style={songInfoStyle}>
                 <h3>
-                  {song.title} {musicIcon}
+                  Song ID: {song.id} {musicIcon}
                 </h3>
-                <p>Duration: {song.duration}</p>
-                <p>Created: {song.created}</p>
+                <p>User ID: {song.user_id}</p>
+                <p>
+                  MIDI Link:{" "}
+                  <a href={song.midi_link} target="_blank" rel="noreferrer">
+                    {song.midi_link}
+                  </a>
+                </p>
+                <p>
+                  Sheet Music Link:{" "}
+                  <a href={song.sheet_music_link} target="_blank" rel="noreferrer">
+                    {song.sheet_music_link}
+                  </a>
+                </p>
+                <p>Created At: {song.created_at}</p>
               </div>
               <button
                 style={deleteButtonStyle}
-                onClick={() => handleDelete(song.title)}
+                onClick={() => handleDelete(song.id)}
                 onMouseOver={(e) =>
                   (e.target.style.backgroundColor =
                     deleteButtonHoverStyle.backgroundColor)
