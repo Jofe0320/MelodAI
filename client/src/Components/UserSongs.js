@@ -41,6 +41,7 @@ const UserSongs = () => {
         }
 
         const data = await response.json();
+        console.log("Fetched songs:", data.songs); // Debug: Log fetched songs
         setSongs(data.songs);
       } catch (error) {
         setError("An error occurred while fetching songs.");
@@ -98,7 +99,7 @@ const UserSongs = () => {
               </h3>
 
               <p style={{ fontWeight: "bold", marginBottom: "10px" }}>
-                <span style={{ color: "#aaa" }}>Username:</span> {user.username}
+                <span style={{ color: "#aaa" }}>Uploaded by:</span> {user.username}
               </p>
 
               {/* Audio Player */}
@@ -128,7 +129,7 @@ const UserSongs = () => {
                 }}
                 onError={(e) => {
                   console.error(`Failed to load PDF: ${song.sheet_music_link}`);
-                  e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load PDF.</p>`;
+                  e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load sheet music.</p>`;
                 }}
               ></iframe>
 
@@ -148,7 +149,7 @@ const UserSongs = () => {
                   cursor: "pointer",
                 }}
               >
-                Open PDF
+                Open Sheet Music
               </button>
 
               {/* Download PDF Button */}
@@ -166,7 +167,7 @@ const UserSongs = () => {
                   fontWeight: "bold",
                 }}
               >
-                Download PDF
+                Download Sheet Music
               </a>
 
               <p style={{ fontSize: "14px", color: "#aaa", marginTop: "10px" }}>
