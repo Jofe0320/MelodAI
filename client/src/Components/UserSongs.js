@@ -19,7 +19,7 @@ const UserSongs = () => {
         const userId = localStorage.getItem("user_id"); // Get user_id (ensure this is stored or fetched)
         const response = await fetch(`/api/songs?user_id=${userId}`, {
           headers: {
-            Authorization: `Bearer ${token}`, // Include token in Authorization header
+            'Authorization': `Bearer ${token}`, // Include token in Authorization header
           },
         });
 
@@ -101,7 +101,9 @@ const UserSongs = () => {
   };
 
   return (
-    <div style={containerStyle}>
+    <div style={
+    containerStyle
+    }>
       <h1>Your Songs</h1>
       {songs.length === 0 ? (
         <p style={{ textAlign: "center" }}>No songs found.</p>
@@ -114,20 +116,46 @@ const UserSongs = () => {
                   Song ID: {song.id} {musicIcon}
                 </h3>
                 <p>User ID: {song.user_id}</p>
+
+                {/* Embed Audio Player for MIDI */}
                 <p>
-                  MIDI Link:{" "}
-                  <a href={song.midi_link} target="_blank" rel="noreferrer">
-                    {song.midi_link}
-                  </a>
+                  <strong>MIDI:</strong>
                 </p>
+                <audio controls>
+                  <source src={song.midi_link} type="audio/midi" />
+                  Your browser does not support the audio element.
+                </audio>
+
+                {/* Embed PDF Viewer for Sheet Music */}
                 <p>
-                  Sheet Music Link:{" "}
-                  <a href={song.sheet_music_link} target="_blank" rel="noreferrer">
-                    {song.sheet_music_link}
-                  </a>
+                  <strong>Sheet Music:</strong>
                 </p>
+                <iframe
+                  src={song.sheet_music_link}
+                  title={`Sheet Music ${song.id}`}
+                  style={{
+                    width: "100%",
+                    height: "300px",
+                    border: "1px solid #444",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Your browser does not support embedding PDFs.{" "}
+                  <a
+                    href={song.sheet_music_link}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#00f" }}
+                  >
+                    View Sheet Music
+                  </a>
+                </iframe>
+
+                {/* Song Creation Date */}
                 <p>Created At: {song.created_at}</p>
               </div>
+
+              {/* Delete Button */}
               <button
                 style={deleteButtonStyle}
                 onClick={() => handleDelete(song.id)}
