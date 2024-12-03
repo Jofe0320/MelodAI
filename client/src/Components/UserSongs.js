@@ -68,7 +68,7 @@ const UserSongs = () => {
 
   return (
     <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px", color: "white" }}>
-      <h1>Your Songs</h1>
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Your Songs</h1>
       {songs.length === 0 ? (
         <p style={{ textAlign: "center" }}>No songs found.</p>
       ) : (
@@ -80,21 +80,67 @@ const UserSongs = () => {
           }}
         >
           {songs.map((song) => (
-            <div key={song.id} style={{ backgroundColor: "#333", padding: "20px", borderRadius: "8px" }}>
-              <h3>
+            <div
+              key={song.id}
+              style={{
+                backgroundColor: "#222",
+                padding: "20px",
+                borderRadius: "10px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                color: "#fff",
+              }}
+            >
+              <h3 style={{ color: "#FFD700", marginBottom: "10px" }}>
                 {musicIcon} Song ID: {song.id}
               </h3>
-              <p>User ID: {song.user_id}</p>
-              <audio controls>
+
+              <p style={{ fontWeight: "bold", marginBottom: "10px" }}>
+                <span style={{ color: "#aaa" }}>Username:</span> {user.username}
+              </p>
+
+              {/* Audio Player */}
+              <audio controls style={{ width: "100%", marginBottom: "10px" }}>
                 <source src={song.midi_link} type="audio/midi" />
                 Your browser does not support the audio element.
               </audio>
+
+              {/* PDF Viewer */}
               <iframe
                 src={song.sheet_music_link}
                 title={`Sheet Music ${song.id}`}
-                style={{ width: "100%", height: "300px", marginTop: "10px", borderRadius: "8px" }}
-              />
-              <p>Created At: {song.created_at}</p>
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  marginBottom: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #555",
+                }}
+              ></iframe>
+
+              {/* Download PDF Button */}
+              <a
+                href={song.sheet_music_link}
+                download={`Song_${song.id}_SheetMusic.pdf`}
+                style={{
+                  display: "inline-block",
+                  textDecoration: "none",
+                  color: "#fff",
+                  backgroundColor: "#007bff",
+                  padding: "10px 20px",
+                  borderRadius: "4px",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                }}
+              >
+                Download PDF
+              </a>
+
+              <p style={{ fontSize: "14px", color: "#aaa", marginTop: "10px" }}>
+                Created At: {new Date(song.created_at).toLocaleString()}
+              </p>
             </div>
           ))}
         </div>
