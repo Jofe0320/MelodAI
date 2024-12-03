@@ -12,7 +12,10 @@ function MelodyForm() {
   const { user } = useAuth();
   // Log the user whenever the component renders or user changes
   useEffect(() => {
-    console.log('Current user:', user);
+    if (user) {
+      console.log('Current user:', user);
+      localStorage.setItem('user', JSON.stringify(user)); // Store user data in localStorage
+    }
   }, [user]);
 
   const handleGenerate = () => {

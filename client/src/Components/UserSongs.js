@@ -6,6 +6,15 @@ const musicIcon = "🎵";
 const UserSongs = () => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // State to handle errors
+  const [user, setUser] = useState(null); // State to store user data
+
+  useEffect(() => {
+    // Fetch user data from localStorage and log the user
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+    console.log("Current user from previous page:", storedUser);
+  }, []);
 
   useEffect(() => {
     // Set background color for the body
@@ -18,28 +27,28 @@ const UserSongs = () => {
         const token = localStorage.getItem("token"); // Get token for authentication
         const userId = localStorage.getItem("user_id"); // Get user_id (ensure this is stored or fetched)
         if (!userId || !token) {
-          alert("User ID or token is missing. Please log in again.");
+          setError("User ID or token is missing. Please log in again.");
           return;
         }
 
         const response = await fetch(`/songs?user_id=${userId}`, {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Include token for authentication
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include token for authentication
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setSongs(data.songs); // Update to match the backend response structure
-        } else {
+        if (!response.ok) {
           const errorData = await response.json();
-          console.error("Failed to fetch songs:", errorData.message);
-          alert(errorData.message || "Could not load songs. Please try again.");
+          setError(errorData.message || "Could not load songs. Please try again.");
+          return;
         }
+
+        const data = await response.json();
+        setSongs(data.songs); // Update to match the backend response structure
       } catch (error) {
+        setError("An error occurred while loading songs. Please try again later.");
         console.error("Error fetching songs:", error);
-        alert("An error occurred while loading songs.");
       } finally {
         setLoading(false);
       }
@@ -48,9 +57,12 @@ const UserSongs = () => {
     fetchSongs();
   }, []);
 
-  if (loading) {
-    return <h2 style={{ color: "white", textAlign: "center" }}>Loading songs...</h2>;
-  }
+  useEffect(() => {
+    // Log the user whenever it changes
+    if (user) {
+      console.log("Updated user:", user);
+    }
+  }, [user]);
 
   const containerStyle = {
     maxWidth: "1200px",
@@ -84,6 +96,19 @@ const UserSongs = () => {
     textAlign: "center",
     marginTop: "20px",
   };
+
+  if (loading) {
+    return <h2 style={{ color: "white", textAlign: "center" }}>Loading songs...</h2>;
+  }
+
+  if (error) {
+    return (
+      <div style={containerStyle}>
+        <h2 style={{ color: "red", textAlign: "center" }}>Error</h2>
+        <p style={{ color: "white", textAlign: "center" }}>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div style={containerStyle}>
