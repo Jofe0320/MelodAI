@@ -6,6 +6,15 @@ const musicIcon = "🎵";
 const UserSongs = () => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // State to handle errors
+  const [user, setUser] = useState(null); // State to store user data
+
+  useEffect(() => {
+    // Fetch user data from localStorage and log the user
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+    console.log("Current user from previous page:", storedUser);
+  }, []);
 
   useEffect(() => {
     // Set background color for the body
@@ -17,22 +26,29 @@ const UserSongs = () => {
       try {
         const token = localStorage.getItem("token"); // Get token for authentication
         const userId = localStorage.getItem("user_id"); // Get user_id (ensure this is stored or fetched)
-        const response = await fetch(`/api/songs?user_id=${userId}`, {
+        if (!userId || !token) {
+          setError("User ID or token is missing. Please log in again.");
+          return;
+        }
+
+        const response = await fetch(`/songs?user_id=${userId}`, {
           headers: {
-            'Authorization': `Bearer ${token}`, // Include token in Authorization header
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include token for authentication
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setSongs(data.songs); // Update to match the backend response structure
-        } else {
-          console.error("Failed to fetch songs");
-          alert("Could not load songs. Please try again.");
+        if (!response.ok) {
+          const errorData = await response.json();
+          setError(errorData.message || "Could not load songs. Please try again.");
+          return;
         }
+
+        const data = await response.json();
+        setSongs(data.songs); // Update to match the backend response structure
       } catch (error) {
+        setError("An error occurred while loading songs. Please try again later.");
         console.error("Error fetching songs:", error);
-        alert("An error occurred while loading songs.");
       } finally {
         setLoading(false);
       }
@@ -41,14 +57,12 @@ const UserSongs = () => {
     fetchSongs();
   }, []);
 
-  const handleDelete = async (id) => {
-    alert(`Deleted song with ID ${id}`);
-    // Optional: Implement DELETE request to remove the song from the database
-  };
-
-  if (loading) {
-    return <h2 style={{ color: "white", textAlign: "center" }}>Loading songs...</h2>;
-  }
+  useEffect(() => {
+    // Log the user whenever it changes
+    if (user) {
+      console.log("Updated user:", user);
+    }
+  }, [user]);
 
   const containerStyle = {
     maxWidth: "1200px",
@@ -78,32 +92,26 @@ const UserSongs = () => {
     marginBottom: "10px",
   };
 
-  const deleteButtonStyle = {
-    backgroundColor: "#ff4d4d",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    padding: "10px",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "5px",
-  };
-
-  const deleteButtonHoverStyle = {
-    backgroundColor: "#e60000",
-  };
-
   const footerStyle = {
     textAlign: "center",
     marginTop: "20px",
   };
 
+  if (loading) {
+    return <h2 style={{ color: "white", textAlign: "center" }}>Loading songs...</h2>;
+  }
+
+  if (error) {
+    return (
+      <div style={containerStyle}>
+        <h2 style={{ color: "red", textAlign: "center" }}>Error</h2>
+        <p style={{ color: "white", textAlign: "center" }}>{error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div style={
-    containerStyle
-    }>
+    <div style={containerStyle}>
       <h1>Your Songs</h1>
       {songs.length === 0 ? (
         <p style={{ textAlign: "center" }}>No songs found.</p>
@@ -154,22 +162,6 @@ const UserSongs = () => {
                 {/* Song Creation Date */}
                 <p>Created At: {song.created_at}</p>
               </div>
-
-              {/* Delete Button */}
-              <button
-                style={deleteButtonStyle}
-                onClick={() => handleDelete(song.id)}
-                onMouseOver={(e) =>
-                  (e.target.style.backgroundColor =
-                    deleteButtonHoverStyle.backgroundColor)
-                }
-                onMouseOut={(e) =>
-                  (e.target.style.backgroundColor =
-                    deleteButtonStyle.backgroundColor)
-                }
-              >
-                Delete
-              </button>
             </div>
           ))}
         </div>
