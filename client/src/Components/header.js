@@ -1,14 +1,15 @@
-import cReact, { useState } from 'react';
+import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Drawer, List, ListItem, ListItemText, Box } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
-function Header({ user }) { // Accept user prop for displaying the logged-in user's name
+function Header({ user }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = useNavigate(); // Hook for navigating between routes
 
   const open = Boolean(anchorEl);
-
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -16,6 +17,16 @@ function Header({ user }) { // Accept user prop for displaying the logged-in use
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+
+  const handleEditProfile = () => {
+    handleCloseMenu(); // Close the menu
+    navigate('/edit-profile'); // Navigate to the Edit Profile page
+  };
+
+  const handleUserSongs = () => {
+    handleCloseMenu(); // Close the menu
+    navigate('/usersongs'); // Navigate to the User Songs page
   };
 
   const toggleDrawer = (open) => () => {
@@ -64,27 +75,28 @@ function Header({ user }) { // Accept user prop for displaying the logged-in use
             onClose={handleCloseMenu}
           >
             <MenuItem disabled>{user ? user : "Guest"}</MenuItem>
-            <MenuItem onClick={handleCloseMenu}>Edit User</MenuItem>
-            <MenuItem onClick={handleCloseMenu}>Songs</MenuItem>
+            <MenuItem onClick={handleEditProfile}>Edit User</MenuItem>
+            <MenuItem onClick={handleUserSongs}>Songs</MenuItem>
             <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
           </Menu>
         </div>
 
         {/* Drawer for Side Menu */}
         <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-          <Box sx={
-            { 
-                width: 250,
-            }
-            } role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
+          <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            onClick={toggleDrawer(false)}
+            onKeyDown={toggleDrawer(false)}
+          >
             <List>
-              <ListItem button>
+              <ListItem button onClick={() => navigate('/')}>
                 <ListItemText primary="Home" />
               </ListItem>
-              <ListItem button>
+              <ListItem button onClick={() => navigate('/examples')}>
                 <ListItemText primary="Examples" />
               </ListItem>
-              <ListItem button>
+              <ListItem button onClick={() => navigate('/about-us')}>
                 <ListItemText primary="About Us" />
               </ListItem>
             </List>
