@@ -16,6 +16,7 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  console.log("After imp");
   return children;
 };
 

@@ -3,13 +3,22 @@ import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Drawer, List, 
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useAuth } from '../AuthProvider';
 
 function Header({ user }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate(); // Hook for navigating between routes
 
+  const { logout } = useAuth();
+
   const open = Boolean(anchorEl);
+
+  const handleLogout = async () => {
+    handleCloseMenu(); // Close the dropdown menu
+    await logout(); // Call the logout function to clear the session
+    navigate('/'); // Redirect to the login page
+  };
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -77,7 +86,7 @@ function Header({ user }) {
             <MenuItem disabled>{user ? user : "Guest"}</MenuItem>
             <MenuItem onClick={handleEditProfile}>Edit User</MenuItem>
             <MenuItem onClick={handleUserSongs}>Songs</MenuItem>
-            <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </div>
 

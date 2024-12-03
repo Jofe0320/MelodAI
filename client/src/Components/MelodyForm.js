@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, TextField, Typography, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Header from './header';  // Adjust path if needed
+import {useAuth} from'../AuthProvider'
 
 function MelodyForm() {
   const [tempo, setTempo] = useState(120);
@@ -8,8 +9,14 @@ function MelodyForm() {
   const [audioUrl, setAudioUrl] = useState(null);
   const [generated, setGenerated] = useState(false);
   const [sheetMusicUrl, setSheetMusicUrl] = useState(null);
+  const { user } = useAuth();
+  // Log the user whenever the component renders or user changes
+  useEffect(() => {
+    console.log('Current user:', user);
+  }, [user]);
 
   const handleGenerate = () => {
+    console.log("Hola")
     const generatedAudioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; // Example MP3 URL
     const generatedSheetMusicUrl = "/sample-sheet-music.pdf"; // Local PDF URL in public folder
 
@@ -21,8 +28,7 @@ function MelodyForm() {
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Render Header at the top */}
-      <Header />
-
+      <Header user={user?.username || "Guest"} /> 
       {/* Main content area to center the form */}
       <Box
         sx={{

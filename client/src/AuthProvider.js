@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         if (response.ok) {
           const data = await response.json();
           console.log('User fetched successfully:', data);
-          setUser(data); // Set the user state
+          setUser(data.username); // Set the user state
         } else {
           console.log('No valid session found');
         }
@@ -37,8 +37,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
   
   const login = (userData) => {
-    console.log('Setting user in AuthProvider:', userData);
-    setUser(userData); // Set user state after login
+    console.log('Setting user in AuthProvider:', userData.user);
+    setUser(userData.user); // Set user state after login
     setLoading(false); // Ensure loading is false after login
   };
 

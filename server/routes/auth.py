@@ -38,7 +38,14 @@ def login():
         access_token = create_access_token(identity=user.id)
         
         # Set the token in an HttpOnly cookie
-        response = make_response(jsonify({'message': 'Login successful'}), 200)
+        response = make_response(jsonify({
+            'message': 'Login successful',
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'username': user.username,
+            }
+        }), 200)
         response.set_cookie(
             'token', 
             access_token, 
@@ -70,11 +77,33 @@ def logout():
 @auth_bp.route('/me', methods=['GET'])
 def get_user():
     try:
-        verify_jwt_in_request()  # Validate the token
+        # Log cookies for debugging
+        print(f"Cookies received: {request.cookies}")
+
+        # Validate the JWT token from the request
+        verify_jwt_in_request()
+
+        # Extract the user_id from the token
         user_id = get_jwt_identity()
+        print(f"User ID extracted from token: {user_id}")
+
+        # Retrieve user information from the database
         user = User.query.get(user_id)
         if user:
             return jsonify({'user': {'id': user.id, 'email': user.email, 'username': user.username}})
+
+        # User not found in the database
         return jsonify({'message': 'User not found'}), 404
-    except Exception:
-        return jsonify({'message': 'Unauthorized'}), 401
+
+    except Exception as e:
+        # Include user_id and cookies in error response
+        error_details = {
+            'message': 'Unauthorized access',
+            'error': str(e),
+            'user_id': user_id if 'user_id' in locals() else None,
+            'cookies': request.cookies
+        }
+        print(f"Error in /me endpoint: {error_details}")
+        return jsonify(error_details), 401
+
+

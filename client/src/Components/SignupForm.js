@@ -20,12 +20,18 @@ const SignupForm = () => {
         password,
       });
 
-      // On success, clear the form and display success message
-      setUsername('');
-      setEmail('');
-      setPassword('');
-      setSuccessMessage('Account created successfully!');
-      setErrorMessage(''); // Clear any previous error message
+      // Check and utilize the response data
+      if (response.status === 201) {
+        console.log('Response data:', response.data);
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setSuccessMessage(response.data.message || 'Account created successfully!');
+        setErrorMessage(''); // Clear any previous error message
+      } else {
+        console.log('Unexpected status:', response.status);
+        setErrorMessage('Unexpected response from the server.');
+      }
     } catch (error) {
       // Handle errors (e.g., user already exists)
       if (error.response && error.response.data) {

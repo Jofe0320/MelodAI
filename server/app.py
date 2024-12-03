@@ -21,7 +21,7 @@ load_dotenv()
 
 # Set up the app
 app = Flask(__name__, static_folder='client/build/',    static_url_path='/')
-CORS(app)
+CORS(app, supports_credentials=True)
 
 @app.route('/api/hello')
 def hello():
@@ -76,6 +76,15 @@ migrate = Migrate(app, db)
 app.register_blueprint(auth_bp, url_prefix='/auth')
 
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'  # Replace with a strong secret key
+app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+app.config['JWT_COOKIE_SECURE'] = False  # Use True if your app runs on HTTPS
+app.config['JWT_ACCESS_COOKIE_PATH'] = '/'  # Ensure the cookie is sent with all routes
+from datetime import timedelta
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)  # Example: 1 day
+app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+app.config['JWT_ACCESS_COOKIE_NAME'] = 'token'
+
+
 
 jwt = JWTManager(app)
 
