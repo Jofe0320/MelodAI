@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         if (response.ok) {
           const data = await response.json();
           console.log('User fetched successfully:', data);
-          setUser(data.username); // Set the user state
+          setUser(data.user); // Set the user state
         } else {
           console.log('No valid session found');
         }

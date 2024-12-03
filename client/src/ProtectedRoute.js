@@ -11,6 +11,7 @@ const ProtectedRoute = ({ children }) => {
     return <div>Loading...</div>;
   }
 
+  console.log('User in protected route', user)
   if (!user) {
     // Redirect to login with the current location as state
     return <Navigate to="/login" state={{ from: location }} replace />;
