@@ -102,7 +102,15 @@ const UserSongs = () => {
               </p>
 
               {/* Audio Player */}
-              <audio controls style={{ width: "100%", marginBottom: "10px" }}>
+              <audio
+                controls
+                style={{ width: "100%", marginBottom: "10px" }}
+                onError={(e) => {
+                  e.target.onerror = null; // Prevent infinite loop
+                  console.error(`Failed to load MIDI file: ${song.midi_link}`);
+                  e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load audio.</p>`;
+                }}
+              >
                 <source src={song.midi_link} type="audio/midi" />
                 Your browser does not support the audio element.
               </audio>
@@ -118,7 +126,30 @@ const UserSongs = () => {
                   borderRadius: "8px",
                   border: "1px solid #555",
                 }}
+                onError={(e) => {
+                  console.error(`Failed to load PDF: ${song.sheet_music_link}`);
+                  e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load PDF.</p>`;
+                }}
               ></iframe>
+
+              {/* Open PDF in New Tab Button */}
+              <button
+                onClick={() => window.open(song.sheet_music_link, "_blank")}
+                style={{
+                  display: "inline-block",
+                  textDecoration: "none",
+                  color: "#fff",
+                  backgroundColor: "#28a745",
+                  padding: "10px 20px",
+                  borderRadius: "4px",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  marginBottom: "10px",
+                  cursor: "pointer",
+                }}
+              >
+                Open PDF
+              </button>
 
               {/* Download PDF Button */}
               <a
