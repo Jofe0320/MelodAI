@@ -16,6 +16,7 @@ import requests
 # Import and register blueprints (routes)
 from routes.upload import upload_bp
 from LSTM import generate_midi_from_model
+from routes.convert import convert_bp
 
 load_dotenv()
 
@@ -74,6 +75,8 @@ migrate = Migrate(app, db)
 # Register Blueprints (routes)
 # Register the auth blueprint with the '/auth' prefix
 app.register_blueprint(auth_bp, url_prefix='/auth')
+
+app.register_blueprint(convert_bp, url_prefix='/api')
 
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'  # Replace with a strong secret key
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']

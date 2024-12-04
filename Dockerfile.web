@@ -10,6 +10,12 @@ RUN cd client && npm install && npm run build
 FROM python:3.9 AS backend
 WORKDIR /app
 
+# Install system dependencies for FluidSynth
+RUN apt-get update && apt-get install -y \
+    fluidsynth \
+    && apt-get clean
+
+
 # Copy requirements and install dependencies
 COPY server/requirements.txt .
 RUN pip install -r requirements.txt
