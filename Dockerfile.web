@@ -15,6 +15,16 @@ RUN apt-get update && apt-get install -y \
     fluidsynth \
     && apt-get clean
 
+# Install MuseScore and Xvfb
+RUN apt-get update && apt-get install -y \
+    musescore3 \
+    xvfb \
+    && apt-get clean
+
+
+# Ensure uploads directory exists
+RUN mkdir -p /app/uploads
+
 
 # Copy requirements and install dependencies
 COPY server/requirements.txt .
