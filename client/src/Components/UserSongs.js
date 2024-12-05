@@ -116,25 +116,6 @@ const UserSongs = () => {
                 Your browser does not support the audio element.
               </audio>
 
-              {/* Open PDF in New Tab Button */}
-              <button
-                onClick={() => window.open(song.sheet_music_presigned_url, "_blank")}
-                style={{
-                  display: "inline-block",
-                  textDecoration: "none",
-                  color: "#fff",
-                  backgroundColor: "#28a745",
-                  padding: "10px 20px",
-                  borderRadius: "4px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  marginBottom: "10px",
-                  cursor: "pointer",
-                }}
-              >
-                Open Sheet Music
-              </button>
-
               {/* Download PDF Button */}
               <button
                 onClick={() => {
