@@ -8,6 +8,7 @@ const UserSongs = () => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [playingSong, setPlayingSong] = useState(null); // Stores the MP3 URL of the currently playing song
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -53,6 +54,41 @@ const UserSongs = () => {
 
     fetchSongs();
   }, [user, navigate]);
+
+  const playSong = async (midiUrl) => {
+    try {
+      // Fetch the MIDI file
+      const midiResponse = await fetch(midiUrl);
+      if (!midiResponse.ok) {
+        console.error("Failed to fetch MIDI file.");
+        return;
+      }
+
+      const midiBlob = await midiResponse.blob();
+
+      // Create FormData to send to the /convert endpoint
+      const formData = new FormData();
+      formData.append("file", midiBlob, "song.mid");
+
+      // Send MIDI file to /convert
+      const response = await fetch("/convert", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        console.error("Failed to convert MIDI to MP3.");
+        return;
+      }
+
+      // Get MP3 file and play it
+      const mp3Blob = await response.blob();
+      const mp3Url = URL.createObjectURL(mp3Blob);
+      setPlayingSong(mp3Url); // Set MP3 URL to play the song
+    } catch (error) {
+      console.error("Error converting MIDI to MP3:", error);
+    }
+  };
 
   if (loading) {
     return <h2 style={{ color: "white", textAlign: "center" }}>Loading songs...</h2>;
@@ -102,60 +138,38 @@ const UserSongs = () => {
                 <span style={{ color: "#aaa" }}>Uploaded by:</span> {user.username}
               </p>
 
-              {/* Audio Player */}
-              <audio
-                controls
-                style={{ width: "100%", marginBottom: "10px" }}
-                onError={(e) => {
-                  e.target.onerror = null; // Prevent infinite loop
-                  console.error(`Failed to load MIDI file: ${song.midi_link}`);
-                  e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load audio.</p>`;
-                }}
-              >
-                <source src={song.midi_link} type="audio/midi" />
-                Your browser does not support the audio element.
-              </audio>
-
-              {/* PDF Viewer */}
-              <iframe
-                src={song.sheet_music_link}
-                title={`Sheet Music ${song.id}`}
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  marginBottom: "10px",
-                  borderRadius: "8px",
-                  border: "1px solid #555",
-                }}
-                onError={(e) => {
-                  console.error(`Failed to load PDF: ${song.sheet_music_link}`);
-                  e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load sheet music.</p>`;
-                }}
-              ></iframe>
-
-              {/* Open PDF in New Tab Button */}
+              {/* Play Button */}
               <button
-                onClick={() => window.open(song.sheet_music_link, "_blank")}
+                onClick={() => playSong(song.midi_presigned_url)}
                 style={{
-                  display: "inline-block",
-                  textDecoration: "none",
-                  color: "#fff",
                   backgroundColor: "#28a745",
+                  color: "#fff",
                   padding: "10px 20px",
                   borderRadius: "4px",
-                  textAlign: "center",
+                  cursor: "pointer",
                   fontWeight: "bold",
                   marginBottom: "10px",
-                  cursor: "pointer",
                 }}
               >
-                Open Sheet Music
+                Play Song
               </button>
 
+              {/* Audio Player */}
+              {playingSong && (
+                <audio controls autoPlay style={{ width: "100%" }}>
+                  <source src={playingSong} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              )}
+
               {/* Download PDF Button */}
-              <a
-                href={song.sheet_music_link}
-                download={`Song_${song.id}_SheetMusic.pdf`}
+              <button
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.href = song.sheet_music_presigned_url;
+                  link.download = `Song_${song.id}_SheetMusic.pdf`;
+                  link.click();
+                }}
                 style={{
                   display: "inline-block",
                   textDecoration: "none",
@@ -165,10 +179,11 @@ const UserSongs = () => {
                   borderRadius: "4px",
                   textAlign: "center",
                   fontWeight: "bold",
+                  cursor: "pointer",
                 }}
               >
                 Download Sheet Music
-              </a>
+              </button>
 
               <p style={{ fontSize: "14px", color: "#aaa", marginTop: "10px" }}>
                 Created At: {new Date(song.created_at).toLocaleString()}
