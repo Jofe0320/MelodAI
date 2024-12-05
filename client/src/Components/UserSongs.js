@@ -9,11 +9,12 @@ const UserSongs = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [playingSong, setPlayingSong] = useState(null); // Stores the MP3 URL of the currently playing song
+  const [loadingSongId, setLoadingSongId] = useState(null); // Tracks which song is loading
+  const [currentlyPlayingId, setCurrentlyPlayingId] = useState(null); // Tracks which song is playing
   const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Ensure the user is logged in
     if (!user) {
       setError("User is not logged in. Redirecting...");
       setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
@@ -27,7 +28,7 @@ const UserSongs = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // Include HttpOnly token cookie
+          credentials: "include",
         });
 
         if (!response.ok) {
@@ -42,7 +43,7 @@ const UserSongs = () => {
         }
 
         const data = await response.json();
-        console.log("Fetched songs:", data.songs); // Debug: Log fetched songs
+        console.log("Fetched songs:", data.songs);
         setSongs(data.songs);
       } catch (error) {
         setError("An error occurred while fetching songs.");
@@ -55,38 +56,27 @@ const UserSongs = () => {
     fetchSongs();
   }, [user, navigate]);
 
-  const playSong = async (midiUrl) => {
+  const playSong = async (midiUrl, songId) => {
+    setLoadingSongId(songId); // Indicate this song is loading
+    setCurrentlyPlayingId(songId);
     try {
-      // Fetch the MIDI file
       const midiResponse = await fetch(midiUrl);
-      if (!midiResponse.ok) {
-        console.error("Failed to fetch MIDI file.");
-        return;
-      }
+      if (!midiResponse.ok) throw new Error("Failed to fetch MIDI file.");
 
       const midiBlob = await midiResponse.blob();
-
-      // Create FormData to send to the /convert endpoint
       const formData = new FormData();
       formData.append("file", midiBlob, "song.mid");
 
-      // Send MIDI file to /convert
-      const response = await fetch("/convert", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch("/convert", { method: "POST", body: formData });
+      if (!response.ok) throw new Error("Failed to convert MIDI to MP3.");
 
-      if (!response.ok) {
-        console.error("Failed to convert MIDI to MP3.");
-        return;
-      }
-
-      // Get MP3 file and play it
       const mp3Blob = await response.blob();
       const mp3Url = URL.createObjectURL(mp3Blob);
-      setPlayingSong(mp3Url); // Set MP3 URL to play the song
+      setPlayingSong(mp3Url);
     } catch (error) {
       console.error("Error converting MIDI to MP3:", error);
+    } finally {
+      setLoadingSongId(null); // Clear loading state
     }
   };
 
@@ -139,23 +129,27 @@ const UserSongs = () => {
               </p>
 
               {/* Play Button */}
-              <button
-                onClick={() => playSong(song.midi_presigned_url)}
-                style={{
-                  backgroundColor: "#28a745",
-                  color: "#fff",
-                  padding: "10px 20px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                  marginBottom: "10px",
-                }}
-              >
-                Play Song
-              </button>
+              {loadingSongId === song.id ? (
+                <p style={{ color: "#FFD700" }}>Converting...</p>
+              ) : (
+                <button
+                  onClick={() => playSong(song.midi_presigned_url, song.id)}
+                  style={{
+                    backgroundColor: "#28a745",
+                    color: "#fff",
+                    padding: "10px 20px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Play Song
+                </button>
+              )}
 
               {/* Audio Player */}
-              {playingSong && (
+              {currentlyPlayingId === song.id && playingSong && (
                 <audio controls autoPlay style={{ width: "100%" }}>
                   <source src={playingSong} type="audio/mpeg" />
                   Your browser does not support the audio element.
