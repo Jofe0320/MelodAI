@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, TextField, Typography, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Header from './header';  // Adjust path if needed
 import {useAuth} from'../AuthProvider'
+import CircularProgress from '@mui/material/CircularProgress';
 
 function MelodyForm() {
   const [tempo, setTempo] = useState(120);
@@ -9,6 +10,11 @@ function MelodyForm() {
   const [audioUrl, setAudioUrl] = useState(null);
   const [generated, setGenerated] = useState(false);
   const [sheetMusicUrl, setSheetMusicUrl] = useState(null);
+  const [loadingGenerate, setLoadingGenerate] = useState(false); // Loader for Generate
+  const [loadingSave, setLoadingSave] = useState(false); // Loader for Save
+  const [saved, setSaved] = useState(false);
+
+
   const { user } = useAuth();
   // Log the user whenever the component renders or user changes
   useEffect(() => {
@@ -19,6 +25,8 @@ function MelodyForm() {
     setGenerated(false); // Reset the generated state
     setAudioUrl(null);
     setSheetMusicUrl(null);
+    setLoadingGenerate(true);
+    setSaved(false); // Reset saved state
   
     try {
       // Step 1: Generate MIDI
@@ -64,7 +72,10 @@ function MelodyForm() {
     } catch (error) {
       console.error("Error during melody generation:", error);
       alert("An error occurred: " + error.message);
+    } finally {
+      setLoadingGenerate(false); // Stop the Generate loader
     }
+  
   };
 
   const handleSaveFavorite = async () => {
@@ -72,7 +83,9 @@ function MelodyForm() {
       alert("Please generate a melody first or ensure you're logged in.");
       return;
     }
-  
+
+    setLoadingSave(true); // Start the Save loader
+
     try {
       const formData = new FormData();
   
@@ -100,9 +113,12 @@ function MelodyForm() {
   
       const data = await response.json();
       alert(data.message || "Song saved successfully!");
+      setSaved(true); // Mark the melody as saved
     } catch (error) {
       console.error("Error saving song:", error);
       alert("An error occurred while saving the song.");
+    } finally {
+      setLoadingSave(false); // Stop the Save loader
     }
   };
   
@@ -168,8 +184,16 @@ function MelodyForm() {
           </FormControl>
 
           {/* Generate / Re-generate Button */}
-          <Button variant="contained" color="primary" onClick={handleGenerate} fullWidth sx={{ marginBottom: 2 }}>
-            {generated ? 'Re-generate' : 'Generate'}
+          {/* Generate / Re-generate Button */}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleGenerate}
+            fullWidth
+            disabled={loadingGenerate || loadingSave} // Disable during any loading
+            sx={{ marginBottom: 2 }}
+          >
+            {loadingGenerate ? <CircularProgress size={24} color="inherit" /> : (generated ? 'Re-generate' : 'Generate')}
           </Button>
 
           {/* Audio Player with Built-in Controls */}
@@ -202,9 +226,10 @@ function MelodyForm() {
               color="secondary"
               onClick={handleSaveFavorite}
               fullWidth
+              disabled={loadingGenerate || loadingSave || saved} // Disable during any loading
               sx={{ marginTop: 2 }}
             >
-              Save as Favorite
+              {loadingSave ? <CircularProgress size={24} color="inherit" /> : 'Save as Favorite'}
             </Button>
           )}
 
