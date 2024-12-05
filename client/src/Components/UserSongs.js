@@ -116,23 +116,6 @@ const UserSongs = () => {
                 Your browser does not support the audio element.
               </audio>
 
-              {/* PDF Viewer */}
-              <iframe
-                src={song.sheet_music_presigned_url}
-                title={`Sheet Music ${song.id}`}
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  marginBottom: "10px",
-                  borderRadius: "8px",
-                  border: "1px solid #555",
-                }}
-                onError={(e) => {
-                  console.error(`Failed to load PDF: ${song.sheet_music_presigned_url}`);
-                  e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load sheet music.</p>`;
-                }}
-              ></iframe>
-
               {/* Open PDF in New Tab Button */}
               <button
                 onClick={() => window.open(song.sheet_music_presigned_url, "_blank")}
@@ -153,9 +136,13 @@ const UserSongs = () => {
               </button>
 
               {/* Download PDF Button */}
-              <a
-                href={song.sheet_music_presigned_url}
-                download={`Song_${song.id}_SheetMusic.pdf`}
+              <button
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.href = song.sheet_music_presigned_url;
+                  link.download = `Song_${song.id}_SheetMusic.pdf`;
+                  link.click();
+                }}
                 style={{
                   display: "inline-block",
                   textDecoration: "none",
@@ -165,10 +152,11 @@ const UserSongs = () => {
                   borderRadius: "4px",
                   textAlign: "center",
                   fontWeight: "bold",
+                  cursor: "pointer",
                 }}
               >
                 Download Sheet Music
-              </a>
+              </button>
 
               <p style={{ fontSize: "14px", color: "#aaa", marginTop: "10px" }}>
                 Created At: {new Date(song.created_at).toLocaleString()}
