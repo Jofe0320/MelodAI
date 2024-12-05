@@ -57,10 +57,10 @@ const UserSongs = () => {
 
   const playSong = async (midiUrl, songId) => {
     try {
-      // Fetch the MIDI file using the presigned URL
+      console.log(`Fetching MIDI file for song ID: ${songId}`);
       const midiResponse = await fetch(midiUrl);
       if (!midiResponse.ok) {
-        console.error("Failed to fetch MIDI file.");
+        console.error(`Failed to fetch MIDI file for song ID: ${songId}`);
         return;
       }
 
@@ -70,20 +70,21 @@ const UserSongs = () => {
       const formData = new FormData();
       formData.append("file", midiBlob, "song.mid");
 
-      // Send the MIDI file to the /convert endpoint
+      console.log(`Sending MIDI file to /convert for song ID: ${songId}`);
       const response = await fetch("/convert", {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        console.error("Failed to convert MIDI to MP3.");
+        console.error(`Failed to convert MIDI to MP3 for song ID: ${songId}`);
         return;
       }
 
       // Get the MP3 file and update the audio source
       const mp3Blob = await response.blob();
       const mp3Url = URL.createObjectURL(mp3Blob);
+      console.log(`Converted MP3 URL for song ID: ${songId} - ${mp3Url}`);
 
       // Update the audio source for the specific song
       setAudioSources((prevSources) => ({
@@ -91,7 +92,7 @@ const UserSongs = () => {
         [songId]: mp3Url,
       }));
     } catch (error) {
-      console.error("Error converting MIDI to MP3:", error);
+      console.error(`Error converting MIDI to MP3 for song ID: ${songId}`, error);
     }
   };
 
@@ -143,6 +144,19 @@ const UserSongs = () => {
                 <span style={{ color: "#aaa" }}>Uploaded by:</span> {user.username}
               </p>
 
+              {/* MIDI Link */}
+              <p style={{ fontSize: "14px", marginBottom: "10px" }}>
+                <span style={{ color: "#aaa" }}>MIDI Link:</span>{" "}
+                <a
+                  href={song.midi_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#1e90ff" }}
+                >
+                  Open MIDI File
+                </a>
+              </p>
+
               {/* Audio Player */}
               <audio
                 controls
@@ -156,7 +170,8 @@ const UserSongs = () => {
                   console.error("Failed to load audio.");
                 }}
               >
-                Your browser does not support the audio element.
+                Your browser
+                              does not support the audio element.
               </audio>
 
               {/* Download PDF Button */}
@@ -197,3 +212,4 @@ const UserSongs = () => {
 };
 
 export default UserSongs;
+
