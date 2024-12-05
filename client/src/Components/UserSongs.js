@@ -72,6 +72,7 @@ const UserSongs = () => {
 
       const mp3Blob = await response.blob();
       const mp3Url = URL.createObjectURL(mp3Blob);
+      console.log("Generated MP3 URL:", mp3Url); // Debugging
       setPlayingSong(mp3Url);
     } catch (error) {
       console.error("Error converting MIDI to MP3:", error);
@@ -150,7 +151,7 @@ const UserSongs = () => {
 
               {/* Audio Player */}
               {currentlyPlayingId === song.id && playingSong && (
-                <audio controls autoPlay style={{ width: "100%" }}>
+                <audio key={playingSong} controls autoPlay style={{ width: "100%" }}>
                   <source src={playingSong} type="audio/mpeg" />
                   Your browser does not support the audio element.
                 </audio>
