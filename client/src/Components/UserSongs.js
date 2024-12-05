@@ -5,18 +5,18 @@ import { useNavigate } from "react-router-dom";
 const musicIcon = "🎵";
 
 const UserSongs = () => {
-  const [songs, setSongs] = useState([]); // List of songs
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [audioSources, setAudioSources] = useState({}); // State to track audio sources for each song
-  const { user } = useAuth(); // Get authenticated user
+  const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [playingSong, setPlayingSong] = useState(null); // Stores the MP3 URL of the currently playing song
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect if the user is not logged in
+    // Ensure the user is logged in
     if (!user) {
       setError("User is not logged in. Redirecting...");
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
       return;
     }
 
@@ -27,13 +27,13 @@ const UserSongs = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // Include session cookies
+          credentials: "include", // Include HttpOnly token cookie
         });
 
         if (!response.ok) {
           if (response.status === 401) {
             setError("Your session has expired. Redirecting to login...");
-            setTimeout(() => navigate("/login"), 2000);
+            setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
             return;
           }
           const errorData = await response.json();
@@ -42,7 +42,7 @@ const UserSongs = () => {
         }
 
         const data = await response.json();
-        console.log("Fetched songs:", data.songs); // Debug log for fetched songs
+        console.log("Fetched songs:", data.songs); // Debug: Log fetched songs
         setSongs(data.songs);
       } catch (error) {
         setError("An error occurred while fetching songs.");
@@ -55,12 +55,12 @@ const UserSongs = () => {
     fetchSongs();
   }, [user, navigate]);
 
-  const playSong = async (midiUrl, songId) => {
+  const playSong = async (midiUrl) => {
     try {
-      console.log(`Fetching MIDI file for song ID: ${songId}`);
+      // Fetch the MIDI file
       const midiResponse = await fetch(midiUrl);
       if (!midiResponse.ok) {
-        console.error(`Failed to fetch MIDI file for song ID: ${songId}`);
+        console.error("Failed to fetch MIDI file.");
         return;
       }
 
@@ -70,29 +70,23 @@ const UserSongs = () => {
       const formData = new FormData();
       formData.append("file", midiBlob, "song.mid");
 
-      console.log(`Sending MIDI file to /convert for song ID: ${songId}`);
+      // Send MIDI file to /convert
       const response = await fetch("/convert", {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        console.error(`Failed to convert MIDI to MP3 for song ID: ${songId}`);
+        console.error("Failed to convert MIDI to MP3.");
         return;
       }
 
-      // Get the MP3 file and update the audio source
+      // Get MP3 file and play it
       const mp3Blob = await response.blob();
       const mp3Url = URL.createObjectURL(mp3Blob);
-      console.log(`Converted MP3 URL for song ID: ${songId} - ${mp3Url}`);
-
-      // Update the audio source for the specific song
-      setAudioSources((prevSources) => ({
-        ...prevSources,
-        [songId]: mp3Url,
-      }));
+      setPlayingSong(mp3Url); // Set MP3 URL to play the song
     } catch (error) {
-      console.error(`Error converting MIDI to MP3 for song ID: ${songId}`, error);
+      console.error("Error converting MIDI to MP3:", error);
     }
   };
 
@@ -144,35 +138,29 @@ const UserSongs = () => {
                 <span style={{ color: "#aaa" }}>Uploaded by:</span> {user.username}
               </p>
 
-              {/* MIDI Link */}
-              <p style={{ fontSize: "14px", marginBottom: "10px" }}>
-                <span style={{ color: "#aaa" }}>MIDI Link:</span>{" "}
-                <a
-                  href={song.midi_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "#1e90ff" }}
-                >
-                  Open MIDI File
-                </a>
-              </p>
-
-              {/* Audio Player */}
-              <audio
-                controls
-                style={{ width: "100%", marginBottom: "10px" }}
-                src={audioSources[song.id]} // Use the song-specific audio source
-                onPlay={() => {
-                  if (!audioSources[song.id]) playSong(song.midi_presigned_url, song.id);
-                }}
-                onError={(e) => {
-                  e.target.onerror = null; // Prevent infinite loop
-                  console.error("Failed to load audio.");
+              {/* Play Button */}
+              <button
+                onClick={() => playSong(song.midi_presigned_url)}
+                style={{
+                  backgroundColor: "#28a745",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  marginBottom: "10px",
                 }}
               >
-                Your browser
-                              does not support the audio element.
-              </audio>
+                Play Song
+              </button>
+
+              {/* Audio Player */}
+              {playingSong && (
+                <audio controls autoPlay style={{ width: "100%" }}>
+                  <source src={playingSong} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              )}
 
               {/* Download PDF Button */}
               <button
@@ -212,4 +200,3 @@ const UserSongs = () => {
 };
 
 export default UserSongs;
-
