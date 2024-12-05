@@ -108,17 +108,17 @@ const UserSongs = () => {
                 style={{ width: "100%", marginBottom: "10px" }}
                 onError={(e) => {
                   e.target.onerror = null; // Prevent infinite loop
-                  console.error(`Failed to load MIDI file: ${song.midi_link}`);
+                  console.error(`Failed to load MIDI file: ${song.midi_presigned_url}`);
                   e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load audio.</p>`;
                 }}
               >
-                <source src={song.midi_link} type="audio/midi" />
+                <source src={song.midi_presigned_url} type="audio/midi" />
                 Your browser does not support the audio element.
               </audio>
 
               {/* PDF Viewer */}
               <iframe
-                src={song.sheet_music_link}
+                src={song.sheet_music_presigned_url}
                 title={`Sheet Music ${song.id}`}
                 style={{
                   width: "100%",
@@ -128,14 +128,14 @@ const UserSongs = () => {
                   border: "1px solid #555",
                 }}
                 onError={(e) => {
-                  console.error(`Failed to load PDF: ${song.sheet_music_link}`);
+                  console.error(`Failed to load PDF: ${song.sheet_music_presigned_url}`);
                   e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load sheet music.</p>`;
                 }}
               ></iframe>
 
               {/* Open PDF in New Tab Button */}
               <button
-                onClick={() => window.open(song.sheet_music_link, "_blank")}
+                onClick={() => window.open(song.sheet_music_presigned_url, "_blank")}
                 style={{
                   display: "inline-block",
                   textDecoration: "none",
@@ -154,7 +154,7 @@ const UserSongs = () => {
 
               {/* Download PDF Button */}
               <a
-                href={song.sheet_music_link}
+                href={song.sheet_music_presigned_url}
                 download={`Song_${song.id}_SheetMusic.pdf`}
                 style={{
                   display: "inline-block",
