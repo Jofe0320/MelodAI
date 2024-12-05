@@ -48,7 +48,6 @@ def get_user_songs():
         # Fetch songs for the user from the database
         songs = Song.query.filter_by(user_id=user_id).all()
 
-        # Check if songs exist
         if not songs:
             return jsonify({"message": "No songs found for this user"}), 404
 
@@ -59,8 +58,7 @@ def get_user_songs():
                 "midi_link": song.midi_link,
                 "sheet_music_link": song.sheet_music_link,
                 "created_at": song.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                # Add presigned URLs if bucket access is restricted
-                "midi_presigned_url": generate_presigned_url(song.midi_link),
+                "midi_presigned_url": generate_presigned_url(song.midi_link),  # Add MIDI presigned URL
                 "sheet_music_presigned_url": generate_presigned_url(song.sheet_music_link),
             }
             for song in songs
@@ -70,7 +68,6 @@ def get_user_songs():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 def generate_presigned_url(file_url):
     """

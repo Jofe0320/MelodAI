@@ -8,6 +8,7 @@ const UserSongs = () => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [playingSong, setPlayingSong] = useState(null); // Stores the MP3 URL of the currently playing song
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -53,6 +54,41 @@ const UserSongs = () => {
 
     fetchSongs();
   }, [user, navigate]);
+
+  const playSong = async (midiUrl) => {
+    try {
+      // Fetch the MIDI file
+      const midiResponse = await fetch(midiUrl);
+      if (!midiResponse.ok) {
+        console.error("Failed to fetch MIDI file.");
+        return;
+      }
+
+      const midiBlob = await midiResponse.blob();
+
+      // Create FormData to send to the /convert endpoint
+      const formData = new FormData();
+      formData.append("file", midiBlob, "song.mid");
+
+      // Send MIDI file to /convert
+      const response = await fetch("/convert", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        console.error("Failed to convert MIDI to MP3.");
+        return;
+      }
+
+      // Get MP3 file and play it
+      const mp3Blob = await response.blob();
+      const mp3Url = URL.createObjectURL(mp3Blob);
+      setPlayingSong(mp3Url); // Set MP3 URL to play the song
+    } catch (error) {
+      console.error("Error converting MIDI to MP3:", error);
+    }
+  };
 
   if (loading) {
     return <h2 style={{ color: "white", textAlign: "center" }}>Loading songs...</h2>;
@@ -102,19 +138,29 @@ const UserSongs = () => {
                 <span style={{ color: "#aaa" }}>Uploaded by:</span> {user.username}
               </p>
 
-              {/* Audio Player */}
-              <audio
-                controls
-                style={{ width: "100%", marginBottom: "10px" }}
-                onError={(e) => {
-                  e.target.onerror = null; // Prevent infinite loop
-                  console.error(`Failed to load MIDI file: ${song.midi_presigned_url}`);
-                  e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load audio.</p>`;
+              {/* Play Button */}
+              <button
+                onClick={() => playSong(song.midi_presigned_url)}
+                style={{
+                  backgroundColor: "#28a745",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  marginBottom: "10px",
                 }}
               >
-                <source src={song.midi_presigned_url} type="audio/midi" />
-                Your browser does not support the audio element.
-              </audio>
+                Play Song
+              </button>
+
+              {/* Audio Player */}
+              {playingSong && (
+                <audio controls autoPlay style={{ width: "100%" }}>
+                  <source src={playingSong} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              )}
 
               {/* Download PDF Button */}
               <button
