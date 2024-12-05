@@ -53,18 +53,19 @@ def get_user_songs():
             return jsonify({"message": "No songs found for this user"}), 404
 
         # Serialize the song data
-        songs_data = [
-            {
+        songs_data = []
+        for song in songs:
+            midi_presigned_url = generate_presigned_url(song.midi_link)
+            sheet_music_presigned_url = generate_presigned_url(song.sheet_music_link)
+
+            songs_data.append({
                 "id": song.id,
                 "midi_link": song.midi_link,
                 "sheet_music_link": song.sheet_music_link,
                 "created_at": song.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                # Add presigned URLs if bucket access is restricted
-                "midi_presigned_url": generate_presigned_url(song.midi_link),
-                "sheet_music_presigned_url": generate_presigned_url(song.sheet_music_link),
-            }
-            for song in songs
-        ]
+                "midi_presigned_url": midi_presigned_url if midi_presigned_url else None,
+                "sheet_music_presigned_url": sheet_music_presigned_url if sheet_music_presigned_url else None,
+            })
 
         return jsonify({"songs": songs_data}), 200
 
@@ -74,27 +75,38 @@ def get_user_songs():
 
 def generate_presigned_url(file_url):
     """
-    Generate a presigned URL for an S3 object.
+    Generate a presigned URL for an S3 object with custom headers.
     """
-
-
-
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=os.getenv('AWS_ACCESS_KEY'),
-        aws_secret_access_key=os.getenv('AWS_SECRET_KEY'),
-        region_name=os.getenv('AWS_REGION')
-    )
-
     try:
+        s3 = boto3.client(
+            's3',
+            aws_access_key_id=os.getenv('AWS_ACCESS_KEY'),
+            aws_secret_access_key=os.getenv('AWS_SECRET_KEY'),
+            region_name=os.getenv('AWS_REGION')
+        )
+
+        # Parse the S3 URL
         parsed_url = urlparse(file_url)
         bucket_name = parsed_url.netloc.split('.')[0]
         object_key = parsed_url.path.lstrip('/')
 
-        # Generate the presigned URL
+        # Determine the correct Content-Type
+        if object_key.endswith('.pdf'):
+            content_type = 'application/pdf'
+        elif object_key.endswith('.mid') or object_key.endswith('.midi'):
+            content_type = 'audio/midi'
+        else:
+            content_type = 'application/octet-stream'  # Default type for other files
+
+        # Generate the presigned URL with custom headers
         presigned_url = s3.generate_presigned_url(
             'get_object',
-            Params={'Bucket': bucket_name, 'Key': object_key},
+            Params={
+                'Bucket': bucket_name,
+                'Key': object_key,
+                'ResponseContentDisposition': 'inline',  # Force inline display for compatible files
+                'ResponseContentType': content_type
+            },
             ExpiresIn=3600  # URL valid for 1 hour
         )
         return presigned_url

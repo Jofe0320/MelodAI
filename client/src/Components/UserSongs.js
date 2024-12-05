@@ -4,6 +4,60 @@ import { useNavigate } from "react-router-dom";
 
 const musicIcon = "🎵";
 
+const MidiPlayer = ({ midiUrl }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    if (window.MIDI) {
+      MIDI.loadPlugin({
+        soundfontUrl: "./soundfont/",
+        instrument: "acoustic_grand_piano",
+        onsuccess: () => {
+          console.log("MIDI.js loaded successfully");
+        },
+      });
+    }
+  }, []);
+
+  const handlePlay = async () => {
+    try {
+      setIsPlaying(true);
+      const response = await fetch(midiUrl);
+      const arrayBuffer = await response.arrayBuffer();
+      MIDI.Player.loadFile(arrayBuffer, () => {
+        MIDI.Player.start();
+      });
+    } catch (error) {
+      console.error("Error playing MIDI file:", error);
+    }
+  };
+
+  const handleStop = () => {
+    setIsPlaying(false);
+    MIDI.Player.stop();
+  };
+
+  return (
+    <div style={{ marginBottom: "10px" }}>
+      <button
+        onClick={isPlaying ? handleStop : handlePlay}
+        style={{
+          backgroundColor: isPlaying ? "#ff4d4d" : "#28a745",
+          color: "white",
+          border: "none",
+          padding: "10px 20px",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontWeight: "bold",
+          marginRight: "10px",
+        }}
+      >
+        {isPlaying ? "Stop MIDI" : "Play MIDI"}
+      </button>
+    </div>
+  );
+};
+
 const UserSongs = () => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,10 +66,9 @@ const UserSongs = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Ensure the user is logged in
     if (!user) {
       setError("User is not logged in. Redirecting...");
-      setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
+      setTimeout(() => navigate("/login"), 2000);
       return;
     }
 
@@ -26,13 +79,13 @@ const UserSongs = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // Include HttpOnly token cookie
+          credentials: "include",
         });
 
         if (!response.ok) {
           if (response.status === 401) {
             setError("Your session has expired. Redirecting to login...");
-            setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
+            setTimeout(() => navigate("/login"), 2000);
             return;
           }
           const errorData = await response.json();
@@ -41,7 +94,6 @@ const UserSongs = () => {
         }
 
         const data = await response.json();
-        console.log("Fetched songs:", data.songs); // Debug: Log fetched songs
         setSongs(data.songs);
       } catch (error) {
         setError("An error occurred while fetching songs.");
@@ -102,21 +154,10 @@ const UserSongs = () => {
                 <span style={{ color: "#aaa" }}>Uploaded by:</span> {user.username}
               </p>
 
-              {/* Audio Player */}
-              <audio
-                controls
-                style={{ width: "100%", marginBottom: "10px" }}
-                onError={(e) => {
-                  e.target.onerror = null; // Prevent infinite loop
-                  console.error(`Failed to load MIDI file: ${song.midi_presigned_url}`);
-                  e.target.parentNode.innerHTML = `<p style="color: red;">Failed to load audio.</p>`;
-                }}
-              >
-                <source src={song.midi_presigned_url} type="audio/midi" />
-                Your browser does not support the audio element.
-              </audio>
+              {/* MIDI Player */}
+              <MidiPlayer midiUrl={song.midi_presigned_url} />
 
-              {/* PDF Viewer */}
+              {/* PDF Viewer in iframe */}
               <iframe
                 src={song.sheet_music_presigned_url}
                 title={`Sheet Music ${song.id}`}
@@ -133,43 +174,6 @@ const UserSongs = () => {
                 }}
               ></iframe>
 
-              {/* Open PDF in New Tab Button */}
-              <button
-                onClick={() => window.open(song.sheet_music_presigned_url, "_blank")}
-                style={{
-                  display: "inline-block",
-                  textDecoration: "none",
-                  color: "#fff",
-                  backgroundColor: "#28a745",
-                  padding: "10px 20px",
-                  borderRadius: "4px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  marginBottom: "10px",
-                  cursor: "pointer",
-                }}
-              >
-                Open Sheet Music
-              </button>
-
-              {/* Download PDF Button */}
-              <a
-                href={song.sheet_music_presigned_url}
-                download={`Song_${song.id}_SheetMusic.pdf`}
-                style={{
-                  display: "inline-block",
-                  textDecoration: "none",
-                  color: "#fff",
-                  backgroundColor: "#007bff",
-                  padding: "10px 20px",
-                  borderRadius: "4px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                }}
-              >
-                Download Sheet Music
-              </a>
-
               <p style={{ fontSize: "14px", color: "#aaa", marginTop: "10px" }}>
                 Created At: {new Date(song.created_at).toLocaleString()}
               </p>
@@ -177,9 +181,6 @@ const UserSongs = () => {
           ))}
         </div>
       )}
-      <footer style={{ textAlign: "center", marginTop: "20px" }}>
-        <p>Total songs: {songs.length}</p>
-      </footer>
     </div>
   );
 };
