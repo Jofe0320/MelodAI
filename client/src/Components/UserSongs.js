@@ -8,6 +8,7 @@ const UserSongs = () => {
   const [songs, setSongs] = useState([]); // List of songs
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+  const [audioSources, setAudioSources] = useState({}); // State to track audio sources for each song
   const { user } = useAuth(); // Get authenticated user
   const navigate = useNavigate();
 
@@ -54,7 +55,7 @@ const UserSongs = () => {
     fetchSongs();
   }, [user, navigate]);
 
-  const playSong = async (midiUrl, setAudioSrc) => {
+  const playSong = async (midiUrl, songId) => {
     try {
       // Fetch the MIDI file using the presigned URL
       const midiResponse = await fetch(midiUrl);
@@ -83,7 +84,12 @@ const UserSongs = () => {
       // Get the MP3 file and update the audio source
       const mp3Blob = await response.blob();
       const mp3Url = URL.createObjectURL(mp3Blob);
-      setAudioSrc(mp3Url); // Set MP3 URL in the audio player
+
+      // Update the audio source for the specific song
+      setAudioSources((prevSources) => ({
+        ...prevSources,
+        [songId]: mp3Url,
+      }));
     } catch (error) {
       console.error("Error converting MIDI to MP3:", error);
     }
@@ -115,76 +121,72 @@ const UserSongs = () => {
             gap: "20px",
           }}
         >
-          {songs.map((song) => {
-            const [audioSrc, setAudioSrc] = useState(null); // State for the current audio source
+          {songs.map((song) => (
+            <div
+              key={song.id}
+              style={{
+                backgroundColor: "#222",
+                padding: "20px",
+                borderRadius: "10px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                color: "#fff",
+              }}
+            >
+              <h3 style={{ color: "#FFD700", marginBottom: "10px" }}>
+                {musicIcon} Song ID: {song.id}
+              </h3>
 
-            return (
-              <div
-                key={song.id}
-                style={{
-                  backgroundColor: "#222",
-                  padding: "20px",
-                  borderRadius: "10px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  color: "#fff",
+              <p style={{ fontWeight: "bold", marginBottom: "10px" }}>
+                <span style={{ color: "#aaa" }}>Uploaded by:</span> {user.username}
+              </p>
+
+              {/* Audio Player */}
+              <audio
+                controls
+                style={{ width: "100%", marginBottom: "10px" }}
+                src={audioSources[song.id]} // Use the song-specific audio source
+                onPlay={() => {
+                  if (!audioSources[song.id]) playSong(song.midi_presigned_url, song.id);
+                }}
+                onError={(e) => {
+                  e.target.onerror = null; // Prevent infinite loop
+                  console.error("Failed to load audio.");
                 }}
               >
-                <h3 style={{ color: "#FFD700", marginBottom: "10px" }}>
-                  {musicIcon} Song ID: {song.id}
-                </h3>
+                Your browser does not support the audio element.
+              </audio>
 
-                <p style={{ fontWeight: "bold", marginBottom: "10px" }}>
-                  <span style={{ color: "#aaa" }}>Uploaded by:</span> {user.username}
-                </p>
+              {/* Download PDF Button */}
+              <button
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.href = song.sheet_music_presigned_url;
+                  link.download = `Song_${song.id}_SheetMusic.pdf`;
+                  link.click();
+                }}
+                style={{
+                  display: "inline-block",
+                  textDecoration: "none",
+                  color: "#fff",
+                  backgroundColor: "#007bff",
+                  padding: "10px 20px",
+                  borderRadius: "4px",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                Download Sheet Music
+              </button>
 
-                {/* Audio Player */}
-                <audio
-                  controls
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  src={audioSrc}
-                  onPlay={() => {
-                    if (!audioSrc) playSong(song.midi_presigned_url, setAudioSrc);
-                  }}
-                  onError={(e) => {
-                    e.target.onerror = null; // Prevent infinite loop
-                    console.error("Failed to load audio.");
-                  }}
-                >
-                  Your browser does not support the audio element.
-                </audio>
-
-                {/* Download PDF Button */}
-                <button
-                  onClick={() => {
-                    const link = document.createElement("a");
-                    link.href = song.sheet_music_presigned_url;
-                    link.download = `Song_${song.id}_SheetMusic.pdf`;
-                    link.click();
-                  }}
-                  style={{
-                    display: "inline-block",
-                    textDecoration: "none",
-                    color: "#fff",
-                    backgroundColor: "#007bff",
-                    padding: "10px 20px",
-                    borderRadius: "4px",
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                  }}
-                >
-                  Download Sheet Music
-                </button>
-
-                <p style={{ fontSize: "14px", color: "#aaa", marginTop: "10px" }}>
-                  Created At: {new Date(song.created_at).toLocaleString()}
-                </p>
-              </div>
-            );
-          })}
+              <p style={{ fontSize: "14px", color: "#aaa", marginTop: "10px" }}>
+                Created At: {new Date(song.created_at).toLocaleString()}
+              </p>
+            </div>
+          ))}
         </div>
       )}
       <footer style={{ textAlign: "center", marginTop: "20px" }}>
