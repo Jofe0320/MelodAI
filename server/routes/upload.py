@@ -8,7 +8,7 @@ upload_bp = Blueprint('upload', __name__)
 
 @upload_bp.route('/upload', methods=['POST'])
 def upload_file():
-    from ..app import db, s3 
+    from app import db, s3 
     user_id = request.form.get('user_id')
     midi_file = request.files['midi']
     sheet_music_file = request.files['sheet_music']

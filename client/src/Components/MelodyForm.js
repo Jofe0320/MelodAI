@@ -15,16 +15,99 @@ function MelodyForm() {
     console.log('Current user:', user);
   }, [user]);
 
-  const handleGenerate = () => {
-    console.log("Hola")
-    const generatedAudioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; // Example MP3 URL
-    const generatedSheetMusicUrl = "/sample-sheet-music.pdf"; // Local PDF URL in public folder
-
-    setAudioUrl(generatedAudioUrl);
-    setSheetMusicUrl(generatedSheetMusicUrl);
-    setGenerated(true);
+  const handleGenerate = async () => {
+    setGenerated(false); // Reset the generated state
+    setAudioUrl(null);
+    setSheetMusicUrl(null);
+  
+    try {
+      // Step 1: Generate MIDI
+      const generateResponse = await fetch("/api/generate_melody", { method: "GET" });
+      if (!generateResponse.ok) throw new Error("Failed to generate MIDI");
+  
+      // Store the generated MIDI file as a Blob
+      const midiBlob = await generateResponse.blob();
+  
+      // Create a File object for the MIDI file
+      const midiFile = new File([midiBlob], "generated_melody.mid", { type: "audio/midi" });
+  
+      // Step 2: Convert MIDI to MP3
+      const mp3FormData = new FormData();
+      mp3FormData.append("file", midiFile);
+  
+      const mp3Response = await fetch("/api/convert", {
+        method: "POST",
+        body: mp3FormData,
+      });
+      if (!mp3Response.ok) throw new Error("Failed to convert MIDI to MP3");
+  
+      const mp3Blob = await mp3Response.blob();
+      const mp3Url = URL.createObjectURL(mp3Blob);
+      setAudioUrl(mp3Url);
+  
+      // Step 3: Convert MIDI to Sheet Music PDF
+      const pdfFormData = new FormData();
+      pdfFormData.append("file", midiFile);
+  
+      const pdfResponse = await fetch("/api/generate_pdf", {
+        method: "POST",
+        body: pdfFormData,
+      });
+      if (!pdfResponse.ok) throw new Error("Failed to convert MIDI to PDF");
+  
+      const pdfBlob = await pdfResponse.blob();
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      setSheetMusicUrl(pdfUrl);
+  
+      // Set the generated state to true
+      setGenerated(true);
+    } catch (error) {
+      console.error("Error during melody generation:", error);
+      alert("An error occurred: " + error.message);
+    }
   };
 
+  const handleSaveFavorite = async () => {
+    if (!audioUrl || !sheetMusicUrl || !user) {
+      alert("Please generate a melody first or ensure you're logged in.");
+      return;
+    }
+  
+    try {
+      const formData = new FormData();
+  
+      // Add user ID
+      formData.append("user_id", user.id);
+  
+      // Add MIDI file with correct file name
+      const midiBlob = await fetch(audioUrl).then((res) => res.blob());
+      const midiFile = new File([midiBlob], "generated_melody.mid", { type: "audio/midi" });
+      formData.append("midi", midiFile);
+  
+      // Add Sheet Music file with correct file name
+      const pdfBlob = await fetch(sheetMusicUrl).then((res) => res.blob());
+      const pdfFile = new File([pdfBlob], "sheet_music.pdf", { type: "application/pdf" });
+      formData.append("sheet_music", pdfFile);
+  
+      const response = await fetch("/upload", {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to save the song");
+      }
+  
+      const data = await response.json();
+      alert(data.message || "Song saved successfully!");
+    } catch (error) {
+      console.error("Error saving song:", error);
+      alert("An error occurred while saving the song.");
+    }
+  };
+  
+  
+  
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Render Header at the top */}
@@ -111,6 +194,20 @@ function MelodyForm() {
               ></iframe>
             </>
           )}
+
+          {/* Favorite Button */}
+          {generated && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleSaveFavorite}
+              fullWidth
+              sx={{ marginTop: 2 }}
+            >
+              Save as Favorite
+            </Button>
+          )}
+
 
           {/* Placeholder for Sheet Music */}
           {!generated && (

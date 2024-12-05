@@ -53,7 +53,7 @@ def make_prediction(input_data):
     return response_json.get('predictions', None)
 
 # Melody generation API endpoint
-@app.route('/generate_melody', methods=['GET'])
+@app.route('/api/generate_melody', methods=['GET'])
 def generate_melody():
     # Call generate_midi_from_model and get the in-memory MIDI file
     midi_io = generate_midi_from_model()
