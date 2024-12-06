@@ -90,8 +90,6 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)  # Example: 1 day
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 app.config['JWT_ACCESS_COOKIE_NAME'] = 'token'
 
-
-
 jwt = JWTManager(app)
 
 # Initialize S3

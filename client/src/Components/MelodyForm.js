@@ -13,7 +13,7 @@ function MelodyForm() {
   const [loadingGenerate, setLoadingGenerate] = useState(false); // Loader for Generate
   const [loadingSave, setLoadingSave] = useState(false); // Loader for Save
   const [saved, setSaved] = useState(false);
-
+  const [midiBlob, setMidiBlob] = useState(null);
 
   const { user } = useAuth();
   // Log the user whenever the component renders or user changes
@@ -35,10 +35,9 @@ function MelodyForm() {
   
       // Store the generated MIDI file as a Blob
       const midiBlob = await generateResponse.blob();
-  
+      setMidiBlob(midiBlob);
       // Create a File object for the MIDI file
       const midiFile = new File([midiBlob], "generated_melody.mid", { type: "audio/midi" });
-  
       // Step 2: Convert MIDI to MP3
       const mp3FormData = new FormData();
       mp3FormData.append("file", midiFile);
@@ -93,9 +92,8 @@ function MelodyForm() {
       formData.append("user_id", user.id);
   
       // Add MIDI file with correct file name
-      const midiBlob = await fetch(audioUrl).then((res) => res.blob());
-      const midiFile = new File([midiBlob], "generated_melody.mid", { type: "audio/midi" });
-      formData.append("midi", midiFile);
+      //const midiFile = new File([midiBlob], "generated_melody.mid", { type: "audio/midi" });
+      formData.append("midi", midiBlob);
   
       // Add Sheet Music file with correct file name
       const pdfBlob = await fetch(sheetMusicUrl).then((res) => res.blob());

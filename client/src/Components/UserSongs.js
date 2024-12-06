@@ -37,13 +37,28 @@ const UserSongs = () => {
             setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
             return;
           }
+
+          if (response.status === 404) {
+            // Handle no songs found
+            alert("You don't have any songs. Redirecting to Create Melody...");
+            navigate("/create-melody");
+            return;
+          }
+          
           const errorData = await response.json();
           setError(errorData.message || "Failed to fetch songs.");
           return;
         }
 
         const data = await response.json();
-        console.log("Fetched songs:", data.songs);
+
+        if (data.songs.length === 0) {
+          // Redirect to Create Melody page and show notification
+          alert("You don't have any songs. Redirecting to Create Melody...");
+          navigate("/create-melody");
+          return;
+        }
+
         setSongs(data.songs);
       } catch (error) {
         setError("An error occurred while fetching songs.");
@@ -59,7 +74,9 @@ const UserSongs = () => {
   const playSong = async (midiUrl, songId) => {
     setLoadingSongId(songId); // Indicate this song is loading
     setCurrentlyPlayingId(songId);
+    setPlayingSong(null); // Clear previous playing song
     try {
+      // Fetch MIDI file
       const midiResponse = await fetch(midiUrl);
       if (!midiResponse.ok) throw new Error("Failed to fetch MIDI file.");
 
@@ -67,15 +84,17 @@ const UserSongs = () => {
       const formData = new FormData();
       formData.append("file", midiBlob, "song.mid");
 
-      const response = await fetch("/convert", { method: "POST", body: formData });
+      // Convert MIDI to MP3
+      const response = await fetch("/api/convert-midi-to-mp3", { method: "POST", body: formData });
       if (!response.ok) throw new Error("Failed to convert MIDI to MP3.");
 
       const mp3Blob = await response.blob();
       const mp3Url = URL.createObjectURL(mp3Blob);
-      console.log("Generated MP3 URL:", mp3Url); // Debugging
-      setPlayingSong(mp3Url);
+      console.log("Generated MP3 URL:", mp3Url);
+      setPlayingSong(mp3Url); // Set MP3 URL for playback
     } catch (error) {
       console.error("Error converting MIDI to MP3:", error);
+      alert("An error occurred while trying to play the song.");
     } finally {
       setLoadingSongId(null); // Clear loading state
     }
@@ -125,10 +144,6 @@ const UserSongs = () => {
                 {musicIcon} Song ID: {song.id}
               </h3>
 
-              <p style={{ fontWeight: "bold", marginBottom: "10px" }}>
-                <span style={{ color: "#aaa" }}>Uploaded by:</span> {user.username}
-              </p>
-
               {/* Play Button */}
               {loadingSongId === song.id ? (
                 <p style={{ color: "#FFD700" }}>Converting...</p>
@@ -151,7 +166,15 @@ const UserSongs = () => {
 
               {/* Audio Player */}
               {currentlyPlayingId === song.id && playingSong && (
-                <audio key={playingSong} controls autoPlay style={{ width: "100%" }}>
+                <audio
+                  key={playingSong}
+                  controls
+                  autoPlay
+                  style={{
+                    width: "100%",
+                    margin: "10px 0", // Adjusts spacing above and below the audio player
+                  }}
+                >
                   <source src={playingSong} type="audio/mpeg" />
                   Your browser does not support the audio element.
                 </audio>
