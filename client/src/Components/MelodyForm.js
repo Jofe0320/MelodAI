@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextField, Typography, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Button, Typography, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Header from './header';  // Adjust path if needed
 import {useAuth} from'../AuthProvider'
 import CircularProgress from '@mui/material/CircularProgress';
 
 function MelodyForm() {
-  const [tempo, setTempo] = useState(120);
   const [key, setKey] = useState('');
   const [audioUrl, setAudioUrl] = useState(null);
   const [generated, setGenerated] = useState(false);
@@ -30,7 +29,7 @@ function MelodyForm() {
   
     try {
       // Step 1: Generate MIDI
-      const generateResponse = await fetch("/api/generate_melody", { method: "GET" });
+      const generateResponse = await fetch(`/api/generate_melody?key=${key}`, { method: "GET" });
       if (!generateResponse.ok) throw new Error("Failed to generate MIDI");
   
       // Store the generated MIDI file as a Blob
@@ -160,16 +159,6 @@ function MelodyForm() {
           <Typography variant="h4" sx={{ marginBottom: 2 }}>
             Create Melody
           </Typography>
-
-          {/* Tempo Input */}
-          <TextField
-            label="Tempo (BPM)"
-            type="number"
-            value={tempo}
-            onChange={(e) => setTempo(e.target.value)}
-            sx={{ marginBottom: 2 }}
-            fullWidth
-          />
 
           {/* Key Select Input */}
           <FormControl fullWidth sx={{ marginBottom: 2 }}>

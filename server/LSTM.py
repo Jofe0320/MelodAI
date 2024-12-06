@@ -5,7 +5,7 @@ import mido
 import queue
 import io
 
-def generate_midi_from_model(model_path='GOOD_MODEL3.keras', output_file='output2.mid', length=55, temperature=0.5):
+def generate_midi_from_model(model_path='GOOD_MODEL3.keras', output_file='output2.mid', length=55, temperature=0.5, tonic=0):
     def calculate_scale(tonic, intervals):
         return [(tonic + interval) % 12 for interval in intervals]
 
@@ -36,7 +36,6 @@ def generate_midi_from_model(model_path='GOOD_MODEL3.keras', output_file='output
     model = tf.keras.models.load_model(model_path)
 
     # Initial start array, assuming the same tonic and mode
-    tonic = random.randint(0,11)
     mode = random.randint(0,1)
     octave = int(np.random.normal(6,1,1)[0])
 

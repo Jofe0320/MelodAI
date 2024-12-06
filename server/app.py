@@ -55,8 +55,17 @@ def make_prediction(input_data):
 # Melody generation API endpoint
 @app.route('/api/generate_melody', methods=['GET'])
 def generate_melody():
+    # Get the key from the query parameters
+    key = request.args.get('key', 'C')  # Default to 'C' if no key is provided
+    print(f"Generating melody in key: {key}")
+
+    # Adjust the tonic based on the key
+    key_mapping = {'C': 0, 'C#': 1, 'D': 2, 'D#': 3, 'E': 4, 'F': 5, 
+                   'F#': 6, 'G': 7, 'G#': 8, 'A': 9, 'A#': 10, 'B': 11}
+    tonic = key_mapping.get(key, 0)  # Default to 'C'
+
     # Call generate_midi_from_model and get the in-memory MIDI file
-    midi_io = generate_midi_from_model()
+    midi_io = generate_midi_from_model(tonic=tonic)
 
     # Return MIDI file as response without saving to disk
     return send_file(
