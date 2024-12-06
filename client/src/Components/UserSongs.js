@@ -179,6 +179,31 @@ const UserSongs = () => {
                   Your browser does not support the audio element.
                 </audio>
               )}
+              
+              {/* Download MIDI Button */}
+              <button
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.href = song.midi_presigned_url; // Presigned URL for the MIDI file
+                  link.download = `Song_${song.id}.mid`; // Suggested filename for download
+                  link.click();
+                }}
+                style={{
+                  display: "inline-block",
+                  textDecoration: "none",
+                  color: "#fff",
+                  backgroundColor: "#17a2b8", // Teal color for distinction
+                  padding: "10px 20px",
+                  borderRadius: "4px",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  marginTop: "10px", // Space below other elements
+                }}
+              >
+                Download MIDI File
+              </button>
+
 
               {/* Download PDF Button */}
               <button
