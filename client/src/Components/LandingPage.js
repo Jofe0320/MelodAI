@@ -200,6 +200,11 @@ export default function LandingPage() {
           </Grid>
         </div>
       </main>
+      <footer align='center'>
+      Data provided by Bernd Krueger, under the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA). 
+      Work gotten from http://www.piano-midi.de
+
+      </footer>
     </div>
   );
 }
