@@ -90,32 +90,36 @@ export default function LandingPage() {
         </div>
 
         <div className="melodai-about bg-gray-200 pt-16 pb-16">
-          <h2 className="melodai-about-title text-3xl font-bold text-center mb-12" style={{ color: "white" }}>
-            ABOUT US
-          </h2>
-          <div className="melodai-about-content grid md:grid-cols-2 gap-8">
-            <div className="relative melodai-about-images">
-              <div className="melodai-about-image-bg">
-                <img
-                  src="MelodaiLogo.png"
-                  alt="Melodai Logo"
-                  className="melodai-image w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-            <div>
-              <h3 className="melodai-about-subtitle text-2xl font-semibold mb-4" style={{ color: "white" }}>
-                Our Mission
-              </h3>
-              <p className="melodai-about-description mb-6" style={{ color: "white" }}>
-                Melodai is a groundbreaking online platform revolutionizing music creation. Our platform empowers users to
-                effortlessly generate melodies tailored to their preferences, from classical to contemporary styles. We're
-                democratizing music composition through innovative AI technology.
-              </p>
-            </div>
-          </div>
-        </div>
+  <h2
+  className="melodai-about-title text-3xl font-bold mb-12"
+  style={{ color: "white", marginLeft: "370px", width: "fit-content" }}
+>
+  ABOUT US
+</h2>
+
+  <div className="melodai-about-content grid md:grid-cols-2 gap-8">
+    <div className="relative melodai-about-images">
+      <div className="melodai-about-image-bg">
+        <img
+          src="/MelodaiLogo.png" // Use the correct path here
+          alt="Melodai Logo"
+          className="melodai-image w-full h-full object-contain" // Changed from object-cover to object-contain
+          loading="lazy"
+        />
+      </div>
+    </div>
+    <div>
+      <h3 className="melodai-about-subtitle text-2xl font-semibold mb-4" style={{ color: "white" }}>
+        Our Mission
+      </h3>
+      <p className="melodai-about-description mb-6" style={{ color: "white" }}>
+        Melodai is a groundbreaking online platform revolutionizing music creation. Our platform empowers users to
+        effortlessly generate melodies tailored to their preferences, from classical to contemporary styles. We're
+        democratizing music composition through innovative AI technology.
+      </p>
+    </div>
+  </div>
+</div>
         {/* Melodies Section */}
         <div className="melodai-melodies-section">
           <Typography
