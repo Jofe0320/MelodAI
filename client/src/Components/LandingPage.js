@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card, CardMedia, CardContent, Typography, Grid, Button } from "@mui/material";
+import { Card, CardMedia, CardContent, Typography, Grid, Button, Box } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
@@ -30,17 +30,20 @@ const showcaseLinks = [
   },
 ];
 
+const melodies = [
+  { name: "Example song",user: "Dev Team", audioSrc: "/songA.mp3", duration: "0:23" },
+  { name: "Before User Interaction", user: "Dev Team", audioSrc: "/songC.mp3", duration: "00:34" },
+  { name: "After User Interaction", user: "Jofe0320", audioSrc: "/songB.mpeg", duration: "00:31" },
+];
+
 export default function LandingPage() {
   return (
     <div className="melodai-container min-h-screen">
       <header className="melodai-header p-4 flex justify-between items-center">
         <h1 className="melodai-logo text-xl font-bold" style={{ color: "black" }}>Melodai</h1>
         <nav className="flex ml-auto space-x-6">
-          <Link to="/explore" className="melodai-bubble-button text-sm">
-            Explore Melodai
-          </Link>
-          <Link to="/login" className="melodai-bubble-button text-sm">
-            Profile
+          <Link to="/create-melody" className="melodai-bubble-button text-bg">
+            Create Melodies
           </Link>
         </nav>
       </header>
@@ -92,11 +95,10 @@ export default function LandingPage() {
           </h2>
           <div className="melodai-about-content grid md:grid-cols-2 gap-8">
             <div className="relative melodai-about-images">
-              <div className="melodai-about-image-bg"></div>
-              <div className="absolute bottom-0 right-0 w-2/3 aspect-video bg-gray-200 rounded-lg overflow-hidden transform translate-x-1/4 translate-y-1/4">
+              <div className="melodai-about-image-bg">
                 <img
-                  src="/placeholder.svg?height=150&width=200"
-                  alt="DJ equipment"
+                  src="MelodaiLogo.png"
+                  alt="Melodai Logo"
                   className="melodai-image w-full h-full object-cover"
                   loading="lazy"
                 />
@@ -113,6 +115,47 @@ export default function LandingPage() {
               </p>
             </div>
           </div>
+        </div>
+        {/* Melodies Section */}
+        <div className="melodai-melodies-section">
+          <Typography
+            variant="h3"
+            gutterBottom
+            align="center"
+            sx={{
+              color: "white",
+              textShadow: "2px 2px 5px rgba(0, 0, 0, 0.7)",
+              marginBottom: "24px",
+            }}
+          >
+            Sample Melodies
+          </Typography>
+          <Grid container spacing={4} justifyContent="center">
+            {melodies.map((melody, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    color: "white",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <Typography variant="h5">{melody.name}</Typography>
+                  <Typography variant="subtitle1">By: {melody.user}</Typography>
+                  <audio controls style={{ width: "100%" }}>
+                    <source src={melody.audioSrc} type="audio/mp3" />
+                    Your browser does not support the audio element.
+                  </audio>
+                  <Typography variant="caption" sx={{ marginTop: "8px" }}>
+                    Duration: {melody.duration}
+                  </Typography>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
         </div>
 
         {/* Project Showcase Section */}
