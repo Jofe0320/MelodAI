@@ -56,18 +56,66 @@ export default function EditProfilePage() {
         currentPassword: userInfo.currentPassword,
       };
 
-      if (field === "username") {
-        payload.newUsername = userInfo.newUsername;
-        await axios.put("http://localhost:5000/auth/update-username", payload);
-        setSuccessMessage("Username updated successfully!");
-      } else if (field === "email") {
-        payload.email = userInfo.email;
-        await axios.put("http://localhost:5000/auth/update-email", payload);
-        setSuccessMessage("Email updated successfully!");
-      } else if (field === "password") {
-        payload.newPassword = userInfo.newPassword;
-        await axios.put("http://localhost:5000/auth/update-password", payload);
-        setSuccessMessage("Password updated successfully!");
+      try {
+        let response;
+      
+        if (field === "username") {
+          const payload = { 
+            currentUsername: userInfo.currentUsername, 
+            currentPassword: userInfo.currentPassword, 
+            newUsername: userInfo.newUsername 
+          };
+      
+          response = await fetch(`/auth/update-username`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+        } 
+        else if (field === "email") {
+          const payload = { 
+            currentUsername: userInfo.currentUsername, 
+            currentPassword: userInfo.currentPassword, 
+            email: userInfo.email 
+          };
+      
+          response = await fetch(`/auth/update-email`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+        } 
+        else if (field === "password") {
+          const payload = { 
+            currentUsername: userInfo.currentUsername, 
+            currentPassword: userInfo.currentPassword, 
+            newPassword: userInfo.newPassword 
+          };
+      
+          response = await fetch(`/auth/update-password`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+        }
+      
+        // Check if the response is okay (status 2xx)
+        if (response.ok) {
+          const result = await response.json();
+          setSuccessMessage(result.message || "Update successful!");
+        } else {
+          const errorData = await response.json();
+          setErrors({ general: errorData.error || "An error occurred." });
+        }
+      } catch (error) {
+        console.error("Error updating:", error);
+        setErrors({ general: "Something went wrong. Please try again later." });
       }
 
       setErrors({});
