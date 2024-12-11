@@ -58,15 +58,15 @@ export default function EditProfilePage() {
 
       if (field === "username") {
         payload.newUsername = userInfo.newUsername;
-        await axios.put("http://localhost:5000/auth/update-username", payload);
+        await axios.put("auth/update-username", payload);
         setSuccessMessage("Username updated successfully!");
       } else if (field === "email") {
         payload.email = userInfo.email;
-        await axios.put("http://localhost:5000/auth/update-email", payload);
+        await axios.put("auth/update-email", payload);
         setSuccessMessage("Email updated successfully!");
       } else if (field === "password") {
         payload.newPassword = userInfo.newPassword;
-        await axios.put("http://localhost:5000/auth/update-password", payload);
+        await axios.put("auth/update-password", payload);
         setSuccessMessage("Password updated successfully!");
       }
 

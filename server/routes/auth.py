@@ -107,3 +107,94 @@ def get_user():
         return jsonify(error_details), 401
 
 
+@auth_bp.route('/update-username', methods=['PUT'])
+def update_username():
+    try:
+        # Step 1: Parse JSON data
+        data = request.get_json()
+        current_username = data.get('currentUsername')
+        current_password = data.get('currentPassword')
+        new_username = data.get('newUsername')
+
+        
+        # Step 2: Input Validation
+        if not current_username or not current_password or not new_username:
+            return jsonify({"error": "Email, password, and new username are required."}), 400
+        
+        # Step 3: Query the database for the user
+        user = User.query.filter_by(username=current_username).first()
+        if not user or not user.check_password(current_password):
+            return jsonify({"error": "User or password incorrect."}), 404
+        
+
+        
+        # Step 5: Update the username
+        user.username = new_username
+        db.session.commit()  # Commit changes to the database
+        
+        return jsonify({"message": "Username updated successfully."}), 200
+    
+    except Exception as e:
+        # Handle any unexpected errors
+        return jsonify({"error": str(e)}), 500
+    
+@auth_bp.route('/update-password', methods=['PUT'])
+def update_password():
+    try:
+        # Step 1: Parse JSON data
+        data = request.get_json()
+        current_username = data.get('currentUsername')
+        current_password = data.get('currentPassword')
+        new_password = data.get('newPassword')
+
+        # Step 2: Input Validation
+        if not current_username or not current_password or not new_password:
+            return jsonify({"error": "Username, current password, and new password are required."}), 400
+        
+
+        # Step 3: Query the database for the user
+        user = User.query.filter_by(username=current_username).first()
+
+        if not user or not user.check_password(current_password):
+            return jsonify({"error": "User or password incorrect."}), 404
+
+        # Step 4: Update the password
+        user.set_password(new_password)
+        db.session.commit()
+
+        return jsonify({"message": "Password updated successfully."}), 200
+
+    except Exception as e:
+        print("Error:", str(e))  # Debugging the error
+        return jsonify({"error": "Something went wrong on the server."}), 500
+    
+
+@auth_bp.route('/update-email', methods=['PUT'])
+def update_email():
+    try:
+        # Step 1: Parse JSON data
+        data = request.get_json()
+        current_username = data.get('currentUsername')
+        current_password = data.get('currentPassword')
+        new_email = data.get('email')
+
+        # Step 2: Input Validation
+        if not current_username or not current_password or not new_email:
+            return jsonify({"error": "Username, current password, and new email are required."}), 400
+        
+
+        # Step 3: Query the database for the user
+        user = User.query.filter_by(username=current_username).first()
+
+        if not user or not user.check_password(current_password):
+            return jsonify({"error": "User or password incorrect."}), 404
+
+        # Step 4: Update the password
+        user.email = new_email
+        db.session.commit()
+
+        return jsonify({"message": "Email updated successfully."}), 200
+
+    except Exception as e:
+        print("Error:", str(e))  # Debugging the error
+        return jsonify({"error": "Something went wrong on the server."}), 500
