@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Grid, TextField, Button, Typography, Box } from '@mui/material';
 import axios from 'axios';
+import { useNavigate} from 'react-router-dom';
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');
@@ -8,6 +9,7 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +30,8 @@ const SignupForm = () => {
         setPassword('');
         setSuccessMessage(response.data.message || 'Account created successfully!');
         setErrorMessage(''); // Clear any previous error message
+        navigate("/create-melody");
+        
       } else {
         console.log('Unexpected status:', response.status);
         setErrorMessage('Unexpected response from the server.');
